@@ -9,7 +9,17 @@
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; color: #333; }
         
         .header { background: white; padding: 25px 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .logo { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 10px; object-fit: cover; background: #eee; }
+        .logo { 
+    width: 80px; 
+    height: 80px; 
+    border-radius: 50%; 
+    border: 2px solid var(--gold); 
+    margin-bottom: 10px; 
+    object-fit: contain; /* Ganti dari cover ke contain agar tidak terpotong */
+    background: white; 
+    padding: 8px; /* Tambahkan jarak di dalam lingkaran agar logo mengecil sedikit */
+    box-sizing: border-box; /* Penting agar padding tidak merusak ukuran lingkaran */
+}
         .brand-name { font-size: 28px; font-weight: 800; color: var(--dark); margin: 0; }
         .contact-info { font-size: 13px; color: #777; margin-top: 5px; }
 
