@@ -12,13 +12,12 @@
         .logo { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 10px; object-fit: cover; background: #eee; }
         .brand-name { font-size: 28px; font-weight: 800; color: var(--dark); margin: 0; }
         .contact-info { font-size: 13px; color: #777; margin-top: 5px; }
-.price-old { 
-    text-decoration: line-through; 
-    color: #999; 
-    font-size: 12px; 
-    margin-right: 5px; 
-    font-weight: normal;
-}
+
+        /* Style Harga Coret */
+        .price-container { display: flex; flex-direction: column; align-items: center; }
+        .price-old { text-decoration: line-through; color: #999; font-size: 12px; font-weight: normal; }
+        .price-new { color: var(--promo); font-weight: 800; font-size: 16px; }
+
         .nav-tabs { display: flex; justify-content: center; background: white; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .tab { padding: 15px 20px; cursor: pointer; font-weight: bold; color: #aaa; border-bottom: 3px solid transparent; }
         .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
@@ -31,8 +30,7 @@
         .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08); position: relative; transition: 0.3s; }
         .card:hover { transform: translateY(-5px); }
         .card img { width: 100%; height: 180px; object-fit: cover; cursor: pointer; }
-        .info { padding: 12px; }
-        .price { color: var(--promo); font-weight: 800; font-size: 16px; }
+        .info { padding: 12px; text-align: center; }
         .badge { position: absolute; top: 10px; left: 10px; background: var(--promo); color: white; padding: 4px 8px; border-radius: 5px; font-size: 10px; font-weight: bold; }
 
         #modal-detail { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:1000; overflow-y: auto; }
@@ -94,8 +92,7 @@
     <div class="cart-btn" onclick="orderWA()">🛒 Pesanan (<span id="c-count">0</span>)</div>
 
     <script>
-        // MASUKKAN URL WEB APP ANDA DI SINI
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbySo1yLFK5wgzNICrj_1oZCLWDqz9fVV6CoBQvoUoLe1aNvxxILXGcRCBbID3rYC0L_UQ/exec'; 
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyxcNyq4dUZEXMXROj6Jq0ijzLlQv1SQUrN5pR931IQXj-A_Tn123tCDXSpGrMfHWSOvg/exec'; 
         const noWA = '6289699910769';
         let db = [], cart = [], activeProd = null;
 
@@ -110,36 +107,37 @@
             } catch (e) { document.getElementById('container').innerText = "Gagal memuat data."; }
         }
 
-        function filter(kat, el) function filter(kat, el) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    el.classList.add('active');
-    const cont = document.getElementById('container');
-    cont.innerHTML = '';
-    
-    let items = kat === 'PROMO' ? db.filter(i => i.hargaPromo) : db.filter(i => i.kelompok === kat);
-    
-    items.forEach(i => {
-        // Logika Harga Coret
-        let hargaTampil = "";
-        if (i.hargaPromo && i.hargaPromo > 0) {
-            hargaTampil = `<span class="price-old">Rp ${parseInt(i.hargaAsli).toLocaleString('id-ID')}</span> 
-                           <span>Rp ${parseInt(i.hargaPromo).toLocaleString('id-ID')}</span>`;
-        } else {
-            hargaTampil = `<span>Rp ${parseInt(i.hargaAsli).toLocaleString('id-ID')}</span>`;
-        }
+        function filter(kat, el) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            const cont = document.getElementById('container');
+            cont.innerHTML = '';
+            
+            let items = kat === 'PROMO' ? db.filter(i => i.hargaPromo && i.hargaPromo > 0) : db.filter(i => i.kelompok === kat);
+            
+            items.forEach(i => {
+                let hargaHtml = "";
+                if (i.hargaPromo && i.hargaPromo > 0) {
+                    hargaHtml = `<div class="price-container">
+                                    <span class="price-old">Rp ${parseInt(i.hargaAsli).toLocaleString('id-ID')}</span>
+                                    <span class="price-new">Rp ${parseInt(i.hargaPromo).toLocaleString('id-ID')}</span>
+                                 </div>`;
+                } else {
+                    hargaHtml = `<div class="price-new">Rp ${parseInt(i.hargaAsli).toLocaleString('id-ID')}</div>`;
+                }
 
-        cont.innerHTML += `
-            <div class="card">
-                ${i.hargaPromo ? '<div class="badge">PROMO</div>' : ''}
-                <img src="${i.url}" onclick="buka('${i.id}')" onerror="this.src='https://via.placeholder.com/180?text=No+Image'">
-                <div class="info">
-                    <b style="font-size:13px; display:block; margin-bottom:5px;">${i.nama}</b>
-                    <div class="price">${hargaTampil}</div>
-                    ${isAdmin ? `<button onclick="isiEdit('${i.id}')" style="background:var(--gold); border:none; color:white; padding:5px; border-radius:5px; font-size:10px; margin-top:10px; width:100%; cursor:pointer;">EDIT</button>` : ''}
-                </div>
-            </div>`;
-    });
-}
+                cont.innerHTML += `
+                    <div class="card">
+                        ${i.hargaPromo ? '<div class="badge">PROMO</div>' : ''}
+                        <img src="${i.url}" onclick="buka('${i.id}')" onerror="this.src='https://via.placeholder.com/180?text=No+Image'">
+                        <div class="info">
+                            <b style="font-size:13px; display:block; margin-bottom:5px;">${i.nama}</b>
+                            ${hargaHtml}
+                            ${isAdmin ? `<button onclick="isiEdit('${i.id}')" style="background:var(--gold); border:none; color:white; padding:5px; border-radius:5px; font-size:10px; margin-top:10px; width:100%; cursor:pointer;">EDIT</button>` : ''}
+                        </div>
+                    </div>`;
+            });
+        }
 
         function buka(id) {
             activeProd = db.find(i => i.id == id);
@@ -156,6 +154,7 @@
 
         function tutup() { document.getElementById('modal-detail').style.display = 'none'; }
         function tambahKeKeranjang() { cart.push(activeProd.nama); document.getElementById('c-count').innerText = cart.length; tutup(); }
+        
         function orderWA() {
             if(!cart.length) return alert("Keranjang kosong!");
             let msg = "Halo Asheeqa Printing, saya mau pesan:%0A" + cart.map((n, i) => `${i+1}. ${n}`).join('%0A');
