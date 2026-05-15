@@ -12,7 +12,13 @@
         .logo { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 10px; object-fit: cover; background: #eee; }
         .brand-name { font-size: 28px; font-weight: 800; color: var(--dark); margin: 0; }
         .contact-info { font-size: 13px; color: #777; margin-top: 5px; }
-
+.price-old { 
+    text-decoration: line-through; 
+    color: #999; 
+    font-size: 12px; 
+    margin-right: 5px; 
+    font-weight: normal;
+}
         .nav-tabs { display: flex; justify-content: center; background: white; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .tab { padding: 15px 20px; cursor: pointer; font-weight: bold; color: #aaa; border-bottom: 3px solid transparent; }
         .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
@@ -48,8 +54,8 @@
 
     <div class="nav-tabs">
         <div class="tab active" onclick="filter('PROMO', this)">🔥 PROMO</div>
-        <div class="tab" onclick="filter('AD', this)">SERI AD</div>
-        <div class="tab" onclick="filter('CG', this)">SERI CG</div>
+        <div class="tab" onclick="filter('AD', this)">AD Series</div>
+        <div class="tab" onclick="filter('CG', this)">CG Series</div>
     </div>
 
     <div id="admin-box" class="admin-box">
@@ -104,24 +110,36 @@
             } catch (e) { document.getElementById('container').innerText = "Gagal memuat data."; }
         }
 
-        function filter(kat, el) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            el.classList.add('active');
-            const cont = document.getElementById('container'); cont.innerHTML = '';
-            let items = kat === 'PROMO' ? db.filter(i => i.hargaPromo) : db.filter(i => i.kelompok === kat);
-            items.forEach(i => {
-                cont.innerHTML += `
-                    <div class="card">
-                        ${i.hargaPromo ? '<div class="badge">PROMO</div>' : ''}
-                        <img src="${i.url}" onclick="buka('${i.id}')" onerror="this.src='https://via.placeholder.com/180?text=No+Image'">
-                        <div class="info">
-                            <b style="font-size:13px;">${i.nama}</b>
-                            <div class="price">Rp ${parseInt(i.hargaPromo || i.hargaAsli).toLocaleString()}</div>
-                            ${isAdmin ? `<button onclick="isiEdit('${i.id}')" style="background:var(--gold); border:none; color:white; padding:5px; border-radius:5px; font-size:10px; margin-top:5px; width:100%;">EDIT</button>` : ''}
-                        </div>
-                    </div>`;
-            });
+        function filter(kat, el) function filter(kat, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    const cont = document.getElementById('container');
+    cont.innerHTML = '';
+    
+    let items = kat === 'PROMO' ? db.filter(i => i.hargaPromo) : db.filter(i => i.kelompok === kat);
+    
+    items.forEach(i => {
+        // Logika Harga Coret
+        let hargaTampil = "";
+        if (i.hargaPromo && i.hargaPromo > 0) {
+            hargaTampil = `<span class="price-old">Rp ${parseInt(i.hargaAsli).toLocaleString('id-ID')}</span> 
+                           <span>Rp ${parseInt(i.hargaPromo).toLocaleString('id-ID')}</span>`;
+        } else {
+            hargaTampil = `<span>Rp ${parseInt(i.hargaAsli).toLocaleString('id-ID')}</span>`;
         }
+
+        cont.innerHTML += `
+            <div class="card">
+                ${i.hargaPromo ? '<div class="badge">PROMO</div>' : ''}
+                <img src="${i.url}" onclick="buka('${i.id}')" onerror="this.src='https://via.placeholder.com/180?text=No+Image'">
+                <div class="info">
+                    <b style="font-size:13px; display:block; margin-bottom:5px;">${i.nama}</b>
+                    <div class="price">${hargaTampil}</div>
+                    ${isAdmin ? `<button onclick="isiEdit('${i.id}')" style="background:var(--gold); border:none; color:white; padding:5px; border-radius:5px; font-size:10px; margin-top:10px; width:100%; cursor:pointer;">EDIT</button>` : ''}
+                </div>
+            </div>`;
+    });
+}
 
         function buka(id) {
             activeProd = db.find(i => i.id == id);
