@@ -8,54 +8,42 @@
         :root { --wa: #25D366; --gold: #c5a059; --dark: #2d3436; --bg: #f9f9fb; --promo: #d63031; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; color: #333; }
         
-        /* Header & Logo */
-        .header { background: white; padding: 30px 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .logo { width: 85px; height: 85px; border-radius: 50%; border: 3px solid var(--gold); margin-bottom: 12px; object-fit: cover; background: #fff; }
-        .brand-name { font-size: 30px; font-weight: 800; color: var(--dark); margin: 0; letter-spacing: -1px; }
-        .contact-info { font-size: 14px; color: #666; margin-top: 8px; line-height: 1.5; }
+        .header { background: white; padding: 25px 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .logo { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 10px; object-fit: cover; background: #eee; }
+        .brand-name { font-size: 28px; font-weight: 800; color: var(--dark); margin: 0; }
+        .contact-info { font-size: 13px; color: #777; margin-top: 5px; }
 
-        /* Navigasi Tab */
         .nav-tabs { display: flex; justify-content: center; background: white; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .tab { padding: 15px 20px; cursor: pointer; font-weight: bold; color: #aaa; border-bottom: 3px solid transparent; transition: 0.3s; font-size: 14px; }
+        .tab { padding: 15px 20px; cursor: pointer; font-weight: bold; color: #aaa; border-bottom: 3px solid transparent; }
         .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
 
-        /* Panel Admin */
-        .admin-box { background: #fff; padding: 20px; border-radius: 15px; max-width: 500px; margin: 20px auto; display: none; border: 2px dashed var(--gold); box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        input, select, textarea, button { width: 100%; padding: 12px; margin: 6px 0; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 14px; }
-        .btn-save { background: var(--dark); color: white; border: none; font-weight: bold; cursor: pointer; padding: 15px; transition: 0.3s; }
-        .btn-save:hover { background: #000; }
+        .admin-box { background: white; padding: 20px; border-radius: 12px; max-width: 500px; margin: 20px auto; display: none; border: 2px dashed var(--gold); }
+        input, select, textarea, button { width: 100%; padding: 12px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn-save { background: var(--dark); color: white; border: none; font-weight: bold; cursor: pointer; }
 
-        /* Grid Produk */
-        .container { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 18px; padding: 20px; max-width: 1100px; margin: 0 auto; }
-        .card { background: white; border-radius: 18px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.07); position: relative; transition: 0.3s; border: 1px solid #eee; }
-        .card:hover { transform: translateY(-7px); box-shadow: 0 12px 25px rgba(0,0,0,0.1); }
-        .card img { width: 100%; height: 200px; object-fit: cover; cursor: pointer; }
-        .info { padding: 15px; }
-        .price { color: var(--promo); font-weight: 800; font-size: 17px; margin: 5px 0; }
-        .badge { position: absolute; top: 12px; left: 12px; background: var(--promo); color: white; padding: 5px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; z-index: 10; }
+        .container { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 15px; max-width: 1000px; margin: 0 auto; }
+        .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08); position: relative; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); }
+        .card img { width: 100%; height: 180px; object-fit: cover; cursor: pointer; }
+        .info { padding: 12px; }
+        .price { color: var(--promo); font-weight: 800; font-size: 16px; }
+        .badge { position: absolute; top: 10px; left: 10px; background: var(--promo); color: white; padding: 4px 8px; border-radius: 5px; font-size: 10px; font-weight: bold; }
 
-        /* Modal Detail */
-        #modal-detail { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:1000; overflow-y: auto; }
-        .modal-content { background: white; width: 100%; max-width: 500px; margin: 0 auto; min-height: 100vh; position: relative; animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .main-view { width: 100%; height: 400px; object-fit: contain; background: #f8f8f8; }
-        .thumb-list { display: flex; gap: 10px; padding: 15px; overflow-x: auto; border-bottom: 1px solid #eee; }
-        .thumb { width: 70px; height: 70px; object-fit: cover; border-radius: 10px; cursor: pointer; border: 2px solid transparent; }
-        .thumb.active-t { border-color: var(--gold); }
+        #modal-detail { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:1000; overflow-y: auto; }
+        .modal-content { background: white; width: 100%; max-width: 450px; margin: 0 auto; min-height: 100vh; position: relative; }
+        .main-view { width: 100%; height: 350px; object-fit: contain; background: #f0f0f0; }
+        .thumb-list { display: flex; gap: 8px; padding: 10px; overflow-x: auto; }
+        .thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; cursor: pointer; border: 1.5px solid #ddd; }
 
-        /* Floating Button */
-        .cart-btn { position: fixed; bottom: 25px; right: 25px; background: var(--dark); color: white; padding: 16px 28px; border-radius: 50px; cursor: pointer; font-weight: bold; border: 2px solid var(--gold); box-shadow: 0 8px 20px rgba(0,0,0,0.25); z-index: 999; display: flex; align-items: center; gap: 10px; }
+        .cart-btn { position: fixed; bottom: 20px; right: 20px; background: var(--dark); color: white; padding: 15px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; border: 2px solid var(--gold); z-index: 999; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <img src="https://drive.google.com/uc?export=view&id=1F5RGgrMnCtFmzwLQqpKTLvfK-MMX8LJQ" class="logo" alt="Asheeqa Printing" onerror="this.src='https://via.placeholder.com/100?text=ASHEEQA'">
+        <img src="https://ui-avatars.com/api/?name=Asheeqa+Printing&background=c5a059&color=fff&size=128" class="logo">
         <h1 class="brand-name">Asheeqa Printing</h1>
-        <div class="contact-info">
-            <div>📞 0896-9991-0769</div>
-            <div>📍 Jl. Borong Raya 2, Makassar</div>
-        </div>
+        <div class="contact-info">📞 089699910769 | 📍 Makassar</div>
     </div>
 
     <div class="nav-tabs">
@@ -65,48 +53,43 @@
     </div>
 
     <div id="admin-box" class="admin-box">
-        <h3 id="adm-title" style="margin-top:0;">Tambah Produk Baru</h3>
-        <input type="hidden" id="edit-id">
-        <input type="hidden" id="o1"><input type="hidden" id="o2"><input type="hidden" id="o3"><input type="hidden" id="o4"><input type="hidden" id="o5">
-        <input type="text" id="nama" placeholder="Nama Undangan">
+        <h3 id="adm-title">Tambah Produk</h3>
+        <input type="hidden" id="edit-id"><input type="hidden" id="o1"><input type="hidden" id="o2"><input type="hidden" id="o3"><input type="hidden" id="o4"><input type="hidden" id="o5">
+        <input type="text" id="nama" placeholder="Nama Produk">
         <select id="kelompok"><option value="AD">Seri AD</option><option value="CG">Seri CG</option></select>
-        <input type="text" id="jenis" placeholder="Jenis (Contoh: Softcover)">
+        <input type="text" id="jenis" placeholder="Jenis (Softcover/Hardcover)">
         <input type="number" id="hargaA" placeholder="Harga Asli">
         <input type="number" id="hargaP" placeholder="Harga Promo">
-        <p style="font-size:12px; margin: 10px 0 5px; color:#666; font-weight:bold;">Pilih Foto Utama & Galeri (Maks 5):</p>
-        <input type="file" id="f1" accept="image/*">
-        <input type="file" id="f2" accept="image/*">
-        <input type="file" id="f3" accept="image/*">
-        <input type="file" id="f4" accept="image/*">
-        <input type="file" id="f5" accept="image/*">
-        <textarea id="desk" placeholder="Deskripsi/Spesifikasi" rows="3"></textarea>
-        <button onclick="simpan()" id="btnSave" class="btn-save">SIMPAN DATA</button>
-        <button onclick="hapus()" id="btnDel" style="background:#ff7675; color:white; display:none; border:none; cursor:pointer;">HAPUS PRODUK</button>
-        <button onclick="location.reload()" style="background:#eee; color:#333; border:none; cursor:pointer;">BATAL</button>
+        <p style="font-size:11px; color:#666; margin:10px 0 5px;">Upload Foto (Maks 5):</p>
+        <input type="file" id="f1" accept="image/*"><input type="file" id="f2" accept="image/*">
+        <input type="file" id="f3" accept="image/*"><input type="file" id="f4" accept="image/*"><input type="file" id="f5" accept="image/*">
+        <textarea id="desk" placeholder="Deskripsi Lengkap"></textarea>
+        <button onclick="simpan()" id="btnSave" class="btn-save">SIMPAN KE DATABASE</button>
+        <button onclick="hapus()" id="btnDel" style="background:red; color:white; display:none; border:none;">HAPUS</button>
+        <button onclick="location.reload()" style="background:#eee; color:#333; border:none;">BATAL</button>
     </div>
 
-    <div class="container" id="container">Memuat data katalog...</div>
+    <div class="container" id="container">Memuat data...</div>
 
     <div id="modal-detail">
         <div class="modal-content">
-            <button onclick="tutup()" style="width:100%; padding:18px; border:none; background:#f4f4f4; font-weight:bold; cursor:pointer; font-size:15px;">✕ TUTUP DETAIL</button>
+            <button onclick="tutup()" style="width:100%; padding:15px; border:none; background:#eee; font-weight:bold;">KEMBALI</button>
             <img id="v-img" class="main-view">
             <div class="thumb-list" id="v-thumbs"></div>
-            <div style="padding:25px;">
-                <h2 id="v-nama" style="margin:0 0 5px 0; font-size:24px;"></h2>
-                <p id="v-jenis" style="color:var(--gold); font-weight:bold; margin:0 0 15px 0;"></p>
-                <div id="v-desk" style="color:#555; font-size:15px; line-height:1.7; background:#f9f9f9; padding:18px; border-radius:12px; border-left:4px solid var(--gold);"></div>
-                <button onclick="tambahKeKeranjang()" style="background:var(--wa); color:white; padding:20px; border:none; border-radius:15px; width:100%; font-weight:bold; margin-top:25px; font-size:17px; cursor:pointer; box-shadow: 0 5px 15px rgba(37,211,102,0.3);">ORDER VIA WHATSAPP</button>
+            <div style="padding:20px;">
+                <h2 id="v-nama" style="margin:0"></h2>
+                <p id="v-jenis" style="color:var(--gold); font-weight:bold;"></p>
+                <div id="v-desk" style="color:#555; font-size:14px; line-height:1.6; background:#f9f9f9; padding:10px; border-radius:8px;"></div>
+                <button onclick="tambahKeKeranjang()" style="background:var(--wa); color:white; padding:15px; border:none; border-radius:10px; width:100%; font-weight:bold; margin-top:20px;">TAMBAH KE PESANAN</button>
             </div>
         </div>
     </div>
 
-    <div class="cart-btn" onclick="orderWA()">
-        <span>🛒</span> Pesanan (<span id="c-count">0</span>)
-    </div>
+    <div class="cart-btn" onclick="orderWA()">🛒 Pesanan (<span id="c-count">0</span>)</div>
 
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwE2f7SJVZBPjX2ZPo4D0nx-tGSAsRfvUWaqg1srcEkJpuNFaqwIrvuBcEvE_5FyKEYHQ/exec'; 
+        // MASUKKAN URL WEB APP ANDA DI SINI
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbySo1yLFK5wgzNICrj_1oZCLWDqz9fVV6CoBQvoUoLe1aNvxxILXGcRCBbID3rYC0L_UQ/exec'; 
         const noWA = '6289699910769';
         let db = [], cart = [], activeProd = null;
 
@@ -118,32 +101,23 @@
                 const r = await fetch(scriptURL + '?action=read');
                 db = await r.json();
                 filter('PROMO', document.querySelector('.tab'));
-            } catch (e) {
-                document.getElementById('container').innerHTML = "<p>Gagal memuat. Pastikan URL Web App sudah benar.</p>";
-            }
+            } catch (e) { document.getElementById('container').innerText = "Gagal memuat data."; }
         }
 
         function filter(kat, el) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             el.classList.add('active');
-            const cont = document.getElementById('container');
-            cont.innerHTML = '';
+            const cont = document.getElementById('container'); cont.innerHTML = '';
             let items = kat === 'PROMO' ? db.filter(i => i.hargaPromo) : db.filter(i => i.kelompok === kat);
-            
-            if(items.length === 0) {
-                cont.innerHTML = `<p style="grid-column:1/-1; text-align:center; padding:50px; color:#999;">Produk tidak ditemukan.</p>`;
-                return;
-            }
-
             items.forEach(i => {
                 cont.innerHTML += `
                     <div class="card">
                         ${i.hargaPromo ? '<div class="badge">PROMO</div>' : ''}
-                        <img src="${i.url}" onclick="buka('${i.id}')">
+                        <img src="${i.url}" onclick="buka('${i.id}')" onerror="this.src='https://via.placeholder.com/180?text=No+Image'">
                         <div class="info">
-                            <b style="font-size:14px; display:block; margin-bottom:5px;">${i.nama}</b>
-                            <div class="price">Rp ${parseInt(i.hargaPromo || i.hargaAsli).toLocaleString('id-ID')}</div>
-                            ${isAdmin ? `<button onclick="isiEdit('${i.id}')" style="background:var(--gold); border:none; color:white; padding:8px; border-radius:8px; font-size:11px; margin-top:10px; cursor:pointer; width:100%;">⚙️ EDIT</button>` : ''}
+                            <b style="font-size:13px;">${i.nama}</b>
+                            <div class="price">Rp ${parseInt(i.hargaPromo || i.hargaAsli).toLocaleString()}</div>
+                            ${isAdmin ? `<button onclick="isiEdit('${i.id}')" style="background:var(--gold); border:none; color:white; padding:5px; border-radius:5px; font-size:10px; margin-top:5px; width:100%;">EDIT</button>` : ''}
                         </div>
                     </div>`;
             });
@@ -153,37 +127,20 @@
             activeProd = db.find(i => i.id == id);
             document.getElementById('v-img').src = activeProd.url;
             document.getElementById('v-nama').innerText = activeProd.nama;
-            document.getElementById('v-jenis').innerText = "Spesifikasi: " + activeProd.jenis;
-            document.getElementById('v-desk').innerText = activeProd.deskripsi || "Hubungi admin untuk info bahan.";
+            document.getElementById('v-jenis').innerText = activeProd.jenis;
+            document.getElementById('v-desk').innerText = activeProd.deskripsi || "Hubungi admin untuk detail.";
             const t = document.getElementById('v-thumbs'); t.innerHTML = '';
-            [activeProd.url, activeProd.url2, activeProd.url3, activeProd.url4, activeProd.url5].forEach((u, idx) => {
-                if(u && u.length > 20) t.innerHTML += `<img src="${u}" class="thumb ${idx==0?'active-t':''}" onclick="changeImg(this, '${u}')">`;
+            [activeProd.url, activeProd.url2, activeProd.url3, activeProd.url4, activeProd.url5].forEach(u => {
+                if(u && u.length > 20) t.innerHTML += `<img src="${u}" class="thumb" onclick="document.getElementById('v-img').src='${u}'">`;
             });
             document.getElementById('modal-detail').style.display = 'block';
-            document.body.style.overflow = 'hidden';
         }
 
-        function changeImg(el, u) {
-            document.getElementById('v-img').src = u;
-            document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active-t'));
-            el.classList.add('active-t');
-        }
-
-        function tutup() { 
-            document.getElementById('modal-detail').style.display = 'none'; 
-            document.body.style.overflow = 'auto';
-        }
-        
-        function tambahKeKeranjang() { 
-            cart.push(activeProd.nama); 
-            document.getElementById('c-count').innerText = cart.length; 
-            tutup();
-            alert(activeProd.nama + " dimasukkan ke daftar pesanan.");
-        }
-
+        function tutup() { document.getElementById('modal-detail').style.display = 'none'; }
+        function tambahKeKeranjang() { cart.push(activeProd.nama); document.getElementById('c-count').innerText = cart.length; tutup(); }
         function orderWA() {
-            if(!cart.length) return alert("Pilih produk terlebih dahulu!");
-            let msg = "Halo Asheeqa Printing, saya ingin memesan:%0A" + cart.map((n, i) => `${i+1}. ${n}`).join('%0A');
+            if(!cart.length) return alert("Keranjang kosong!");
+            let msg = "Halo Asheeqa Printing, saya mau pesan:%0A" + cart.map((n, i) => `${i+1}. ${n}`).join('%0A');
             window.open(`https://api.whatsapp.com/send?phone=${noWA}&text=${msg}`);
         }
 
@@ -196,63 +153,50 @@
             document.getElementById('hargaA').value = i.hargaAsli;
             document.getElementById('hargaP').value = i.hargaPromo;
             document.getElementById('desk').value = i.deskripsi;
-            document.getElementById('o1').value = i.url;
-            document.getElementById('o2').value = i.url2;
-            document.getElementById('o3').value = i.url3;
-            document.getElementById('o4').value = i.url4;
+            document.getElementById('o1').value = i.url; document.getElementById('o2').value = i.url2;
+            document.getElementById('o3').value = i.url3; document.getElementById('o4').value = i.url4;
             document.getElementById('o5').value = i.url5;
-            document.getElementById('adm-title').innerText = "Edit: " + i.nama;
             document.getElementById('btnDel').style.display = 'block';
-            window.scrollTo({top: 0, behavior: 'smooth'});
+            window.scrollTo(0,0);
         }
 
         async function simpan() {
-            const b = document.getElementById('btnSave'); 
-            b.innerText = "Sedang Memproses..."; b.disabled = true;
-
+            const b = document.getElementById('btnSave'); b.innerText = "Mengunggah..."; b.disabled = true;
             const toB64 = f => !f ? "" : new Promise((res, rej) => {
                 const r = new FileReader(); r.readAsDataURL(f);
                 r.onload = () => res(r.result); r.onerror = e => rej(e);
             });
 
-            try {
-                const p = new URLSearchParams({
-                    action: document.getElementById('edit-id').value ? 'update' : 'add',
-                    rowId: document.getElementById('edit-id').value,
-                    nama: document.getElementById('nama').value,
-                    kelompok: document.getElementById('kelompok').value,
-                    jenis: document.getElementById('jenis').value,
-                    hargaAsli: document.getElementById('hargaA').value,
-                    hargaPromo: document.getElementById('hargaP').value,
-                    deskripsi: document.getElementById('desk').value,
-                    old1: document.getElementById('o1').value,
-                    old2: document.getElementById('o2').value,
-                    old3: document.getElementById('o3').value,
-                    old4: document.getElementById('o4').value,
-                    old5: document.getElementById('o5').value,
-                    img1: await toB64(document.getElementById('f1').files[0]),
-                    img2: await toB64(document.getElementById('f2').files[0]),
-                    img3: await toB64(document.getElementById('f3').files[0]),
-                    img4: await toB64(document.getElementById('f4').files[0]),
-                    img5: await toB64(document.getElementById('f5').files[0])
-                });
+            const p = new URLSearchParams({
+                action: document.getElementById('edit-id').value ? 'update' : 'add',
+                rowId: document.getElementById('edit-id').value,
+                nama: document.getElementById('nama').value,
+                kelompok: document.getElementById('kelompok').value,
+                jenis: document.getElementById('jenis').value,
+                hargaAsli: document.getElementById('hargaA').value,
+                hargaPromo: document.getElementById('hargaP').value,
+                deskripsi: document.getElementById('desk').value,
+                old1: document.getElementById('o1').value, old2: document.getElementById('o2').value,
+                old3: document.getElementById('o3').value, old4: document.getElementById('o4').value,
+                old5: document.getElementById('o5').value,
+                img1: await toB64(document.getElementById('f1').files[0]),
+                img2: await toB64(document.getElementById('f2').files[0]),
+                img3: await toB64(document.getElementById('f3').files[0]),
+                img4: await toB64(document.getElementById('f4').files[0]),
+                img5: await toB64(document.getElementById('f5').files[0])
+            });
 
-                await fetch(scriptURL, { method: 'POST', body: p });
-                location.reload();
-            } catch (e) {
-                alert("Gagal menyimpan. Periksa koneksi Anda.");
-                b.innerText = "SIMPAN DATA"; b.disabled = false;
-            }
+            await fetch(scriptURL, { method: 'POST', body: p });
+            location.reload();
         }
 
         async function hapus() {
-            if(confirm("Hapus produk ini?")) {
+            if(confirm("Hapus produk?")) {
                 const p = new URLSearchParams({ action: 'delete', rowId: document.getElementById('edit-id').value });
                 await fetch(scriptURL, { method: 'POST', body: p });
                 location.reload();
             }
         }
-
         muat();
     </script>
 </body>
