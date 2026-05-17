@@ -79,17 +79,32 @@
         const noWA = '6289699910769';
         let db = [], cart = [], activeProd = null;
 
-        // FUNGSI FIX LINK (VERSI HD)
-        const fixUrl = (url) => {
-            if(!url || url.length < 20) return "https://via.placeholder.com/300?text=No+Image";
-            // Jika link mengandung 'id=', ambil ID-nya dan ubah ke format uc (HD)
-            if (url.includes('id=')) {
-                let id = url.split('id=')[1].split('&')[0];
-                return `https://drive.google.com/uc?export=view&id=${id}`;
-            }
-            return url;
-        };
+       // FUNGSI FIX LINK (VERSI CERDAS UNTUK BERBAGAI FORMAT)
+const fixUrl = (url) => {
+    if(!url || url.length < 20) return "https://via.placeholder.com/300?text=No+Image";
+    
+    // 1. Jika link sudah dalam format googleusercontent (seperti CG71)
+    if (url.includes('googleusercontent.com')) {
+        // Tambahkan parameter =s1000 agar gambar HD/Tajam
+        return url.split('=')[0] + "=s1000";
+    }
+    
+    // 2. Jika link dari Google Drive (seperti AD71)
+    let fileId = "";
+    if (url.includes('id=')) {
+        fileId = url.split('id=')[1].split('&')[0];
+    } else if (url.includes('/d/')) {
+        fileId = url.split('/d/')[1].split('/')[0];
+    }
 
+    if (fileId) {
+        // Kita gunakan format thumbnail dengan resolusi tinggi (s1000) 
+        // karena lebih stabil dibanding format 'uc?export=view'
+        return `https://lh3.googleusercontent.com/d/${fileId}=s1000`;
+    }
+    
+    return url;
+};
         // FUNGSI ZOOM FOTO
         function zoom(src) {
             document.getElementById('zoom-img').src = src;
