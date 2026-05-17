@@ -7,39 +7,45 @@
     <style>
         :root { --wa: #25D366; --gold: #c5a059; --dark: #2d3436; --bg: #f9f9fb; --promo: #d63031; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; color: #333; }
+        
         .header { background: white; padding: 25px 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .logo { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 10px; object-fit: contain; background: white; padding: 8px; box-sizing: border-box; }
         .brand-name { font-size: 28px; font-weight: 800; color: var(--dark); margin: 0; }
         .contact-info { font-size: 13px; color: #777; margin-top: 5px; }
+
         .price-container { display: flex; flex-direction: column; align-items: center; }
         .price-old { text-decoration: line-through; color: #999; font-size: 12px; font-weight: normal; }
         .price-new { color: var(--promo); font-weight: 800; font-size: 16px; }
+
         .nav-tabs { display: flex; justify-content: center; background: white; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .tab { padding: 15px 20px; cursor: pointer; font-weight: bold; color: #aaa; border-bottom: 3px solid transparent; }
         .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
-        .admin-box { background: white; padding: 20px; border-radius: 12px; max-width: 500px; margin: 20px auto; display: none; border: 2px dashed var(--gold); }
-        input, select, textarea, button { width: 100%; padding: 12px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        .btn-save { background: var(--dark); color: white; border: none; font-weight: bold; cursor: pointer; }
+
+        /* Zoom Overlay */
+        #zoom-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center; cursor: zoom-out; }
+        #zoom-overlay img { max-width: 95%; max-height: 90%; border-radius: 10px; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+
         .container { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 15px; max-width: 1000px; margin: 0 auto; }
         .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08); position: relative; transition: 0.3s; }
-        .card:hover { transform: translateY(-5px); }
-        .card img { width: 100%; height: 180px; object-fit: cover; cursor: pointer; background: #eee; }
+        .card img { width: 100%; height: 180px; object-fit: cover; cursor: pointer; background: #eee; display: block; }
         .info { padding: 12px; text-align: center; }
         .badge { position: absolute; top: 10px; left: 10px; background: var(--promo); color: white; padding: 4px 8px; border-radius: 5px; font-size: 10px; font-weight: bold; z-index: 10; }
+
         #modal-detail { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:1000; overflow-y: auto; }
         .modal-content { background: white; width: 100%; max-width: 450px; margin: 0 auto; min-height: 100vh; position: relative; }
         .main-view { width: 100%; height: 350px; object-fit: contain; background: #f0f0f0; cursor: zoom-in; }
         .thumb-list { display: flex; gap: 8px; padding: 10px; overflow-x: auto; }
         .thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; cursor: pointer; border: 1.5px solid #ddd; }
+
         .cart-btn { position: fixed; bottom: 20px; right: 20px; background: var(--dark); color: white; padding: 15px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; border: 2px solid var(--gold); z-index: 999; }
     </style>
 </head>
 <body>
 
+    <div id="zoom-overlay" onclick="this.style.display='none'"><img id="zoom-img"></div>
+
     <div class="header">
-        <img src="https://drive.google.com/uc?export=view&id=1F055wulsiC-LDjW_NMZ4yXsMSCDj53TW" 
-             class="logo" alt="Logo Asheeqa Printing"
-             onerror="this.src='https://ui-avatars.com/api/?name=AP&background=c5a059&color=fff'">
+        <img src="https://drive.google.com/uc?export=view&id=1F055wulsiC-LDjW_NMZ4yXsMSCDj53TW" class="logo" alt="Logo" onerror="this.src='https://ui-avatars.com/api/?name=AP&background=c5a059&color=fff'">
         <h1 class="brand-name">Asheeqa Printing</h1>
         <div class="contact-info">📞 089699910769 | 📍 Makassar</div>
     </div>
@@ -50,29 +56,12 @@
         <div class="tab" onclick="filter('CG', this)">CG Series</div>
     </div>
 
-    <div id="admin-box" class="admin-box">
-        <h3 id="adm-title">Tambah/Edit Produk</h3>
-        <input type="hidden" id="edit-id"><input type="hidden" id="o1"><input type="hidden" id="o2"><input type="hidden" id="o3"><input type="hidden" id="o4"><input type="hidden" id="o5">
-        <input type="text" id="nama" placeholder="Nama Produk">
-        <select id="kelompok"><option value="AD">Seri AD</option><option value="CG">Seri CG</option></select>
-        <input type="text" id="jenis" placeholder="Jenis (Softcover/Hardcover)">
-        <input type="number" id="hargaA" placeholder="Harga Asli">
-        <input type="number" id="hargaP" placeholder="Harga Promo">
-        <p style="font-size:11px; color:#666; margin:10px 0 5px;">Upload Foto Baru (Maks 5):</p>
-        <input type="file" id="f1" accept="image/*"><input type="file" id="f2" accept="image/*">
-        <input type="file" id="f3" accept="image/*"><input type="file" id="f4" accept="image/*"><input type="file" id="f5" accept="image/*">
-        <textarea id="desk" placeholder="Deskripsi Lengkap"></textarea>
-        <button onclick="simpan()" id="btnSave" class="btn-save">SIMPAN KE DATABASE</button>
-        <button onclick="hapus()" id="btnDel" style="background:red; color:white; display:none; border:none;">HAPUS</button>
-        <button onclick="location.reload()" style="background:#eee; color:#333; border:none;">BATAL</button>
-    </div>
-
     <div class="container" id="container">Memuat data...</div>
 
     <div id="modal-detail">
         <div class="modal-content">
             <button onclick="tutup()" style="width:100%; padding:15px; border:none; background:#eee; font-weight:bold; cursor:pointer;">KEMBALI</button>
-            <img id="v-img" class="main-view" onclick="perbesar(this.src)" title="Klik untuk memperbesar">
+            <img id="v-img" class="main-view" onclick="zoom(this.src)">
             <div class="thumb-list" id="v-thumbs"></div>
             <div style="padding:20px;">
                 <h2 id="v-nama" style="margin:0"></h2>
@@ -90,30 +79,21 @@
         const noWA = '6289699910769';
         let db = [], cart = [], activeProd = null;
 
-        const isAdmin = new URLSearchParams(window.location.search).get('mode') === 'admin';
-        if (isAdmin) document.getElementById('admin-box').style.display = 'block';
-
-        // FUNGSI FIX LINK GAMBAR (VERSI PERBAIKAN)
+        // FUNGSI FIX LINK (VERSI HD)
         const fixUrl = (url) => {
-            if(!url || url.length < 20) return "https://via.placeholder.com/180?text=No+Image";
-            let id = "";
+            if(!url || url.length < 20) return "https://via.placeholder.com/300?text=No+Image";
+            // Jika link mengandung 'id=', ambil ID-nya dan ubah ke format uc (HD)
             if (url.includes('id=')) {
-                id = url.split('id=')[1].split('&')[0];
-            } else if (url.includes('/d/')) {
-                id = url.split('/d/')[1].split('/')[0];
+                let id = url.split('id=')[1].split('&')[0];
+                return `https://drive.google.com/uc?export=view&id=${id}`;
             }
-            if (id) {
-                return "https://drive.google.com/uc?export=view&id=" + id.trim();
-            }
-            return url.trim();
+            return url;
         };
 
-        function perbesar(url) {
-            const overlay = document.createElement('div');
-            overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:2000; display:flex; align-items:center; justify-content:center; cursor:zoom-out;";
-            overlay.innerHTML = `<img src="${url}" style="max-width:95%; max-height:95%; border-radius:5px; box-shadow:0 0 30px rgba(0,0,0,0.5);">`;
-            overlay.onclick = () => overlay.remove();
-            document.body.appendChild(overlay);
+        // FUNGSI ZOOM FOTO
+        function zoom(src) {
+            document.getElementById('zoom-img').src = src;
+            document.getElementById('zoom-overlay').style.display = 'flex';
         }
 
         async function muat() {
@@ -132,21 +112,21 @@
             const cont = document.getElementById('container');
             cont.innerHTML = '';
             
-            let items = kat === 'PROMO' ? db.filter(i => i.hargaPromo && parseInt(i.hargaPromo) > 0) : db.filter(i => i.kelompok === kat);
+            let items = kat === 'PROMO' ? db.filter(i => i.hargaPromo && i.hargaPromo > 0) : db.filter(i => i.kelompok === kat);
             
             items.forEach(i => {
-                let hargaHtml = (i.hargaPromo && parseInt(i.hargaPromo) > 0) ? 
+                const imgHD = fixUrl(i.url);
+                let hargaHtml = (i.hargaPromo && i.hargaPromo > 0) ? 
                     `<div class="price-container"><span class="price-old">Rp ${parseInt(i.hargaAsli).toLocaleString('id-ID')}</span><span class="price-new">Rp ${parseInt(i.hargaPromo).toLocaleString('id-ID')}</span></div>` : 
                     `<div class="price-new">Rp ${parseInt(i.hargaAsli).toLocaleString('id-ID')}</div>`;
 
                 cont.innerHTML += `
                     <div class="card">
-                        ${(i.hargaPromo && parseInt(i.hargaPromo) > 0) ? '<div class="badge">PROMO</div>' : ''}
-                        <img src="${fixUrl(i.url)}" onclick="buka('${i.id}')" onerror="this.src='https://via.placeholder.com/180?text=Cek+Izin+Drive'">
+                        ${i.hargaPromo ? '<div class="badge">PROMO</div>' : ''}
+                        <img src="${imgHD}" onclick="buka('${i.id}')" onerror="this.src='https://via.placeholder.com/180?text=Error+Drive'">
                         <div class="info">
                             <b style="font-size:13px; display:block; margin-bottom:5px;">${i.nama}</b>
                             ${hargaHtml}
-                            ${isAdmin ? `<button onclick="isiEdit('${i.id}')" style="background:var(--gold); border:none; color:white; padding:8px; border-radius:5px; font-size:10px; margin-top:10px; width:100%; cursor:pointer;">EDIT</button>` : ''}
                         </div>
                     </div>`;
             });
@@ -154,13 +134,19 @@
 
         function buka(id) {
             activeProd = db.find(i => i.id == id);
-            document.getElementById('v-img').src = fixUrl(activeProd.url);
+            const mainImg = fixUrl(activeProd.url);
+            document.getElementById('v-img').src = mainImg;
             document.getElementById('v-nama').innerText = activeProd.nama;
             document.getElementById('v-jenis').innerText = activeProd.jenis;
             document.getElementById('v-desk').innerText = activeProd.deskripsi || "Hubungi admin untuk detail.";
-            const t = document.getElementById('v-thumbs'); t.innerHTML = '';
+            
+            const t = document.getElementById('v-thumbs'); 
+            t.innerHTML = '';
             [activeProd.url, activeProd.url2, activeProd.url3, activeProd.url4, activeProd.url5].forEach(u => {
-                if(u && u.length > 20) t.innerHTML += `<img src="${fixUrl(u)}" class="thumb" onclick="document.getElementById('v-img').src='${fixUrl(u)}'">`;
+                if(u && u.length > 20) {
+                    const thumbImg = fixUrl(u);
+                    t.innerHTML += `<img src="${thumbImg}" class="thumb" onclick="document.getElementById('v-img').src='${thumbImg}'">`;
+                }
             });
             document.getElementById('modal-detail').style.display = 'block';
         }
@@ -174,57 +160,6 @@
             window.open(`https://api.whatsapp.com/send?phone=${noWA}&text=${msg}`);
         }
 
-        function isiEdit(id) {
-            const i = db.find(x => x.id == id);
-            document.getElementById('edit-id').value = i.id;
-            document.getElementById('nama').value = i.nama;
-            document.getElementById('kelompok').value = i.kelompok;
-            document.getElementById('jenis').value = i.jenis;
-            document.getElementById('hargaA').value = i.hargaAsli;
-            document.getElementById('hargaP').value = i.hargaPromo;
-            document.getElementById('desk').value = i.deskripsi;
-            document.getElementById('o1').value = i.url; document.getElementById('o2').value = i.url2;
-            document.getElementById('o3').value = i.url3; document.getElementById('o4').value = i.url4;
-            document.getElementById('o5').value = i.url5;
-            document.getElementById('btnDel').style.display = 'block';
-            window.scrollTo(0,0);
-        }
-
-        async function simpan() {
-            const b = document.getElementById('btnSave'); b.innerText = "Mengunggah..."; b.disabled = true;
-            const toB64 = f => !f ? "" : new Promise((res, rej) => {
-                const r = new FileReader(); r.readAsDataURL(f);
-                r.onload = () => res(r.result); r.onerror = e => rej(e);
-            });
-            const p = new URLSearchParams({
-                action: document.getElementById('edit-id').value ? 'update' : 'add',
-                rowId: document.getElementById('edit-id').value,
-                nama: document.getElementById('nama').value,
-                kelompok: document.getElementById('kelompok').value,
-                jenis: document.getElementById('jenis').value,
-                hargaAsli: document.getElementById('hargaA').value,
-                hargaPromo: document.getElementById('hargaP').value,
-                deskripsi: document.getElementById('desk').value,
-                old1: document.getElementById('o1').value, old2: document.getElementById('o2').value,
-                old3: document.getElementById('o3').value, old4: document.getElementById('o4').value,
-                old5: document.getElementById('o5').value,
-                img1: await toB64(document.getElementById('f1').files[0]),
-                img2: await toB64(document.getElementById('f2').files[0]),
-                img3: await toB64(document.getElementById('f3').files[0]),
-                img4: await toB64(document.getElementById('f4').files[0]),
-                img5: await toB64(document.getElementById('f5').files[0])
-            });
-            await fetch(scriptURL, { method: 'POST', body: p });
-            location.reload();
-        }
-
-        async function hapus() {
-            if(confirm("Hapus produk?")) {
-                const p = new URLSearchParams({ action: 'delete', rowId: document.getElementById('edit-id').value });
-                await fetch(scriptURL, { method: 'POST', body: p });
-                location.reload();
-            }
-        }
         muat();
     </script>
 </body>
