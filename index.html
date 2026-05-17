@@ -86,25 +86,17 @@
             let fileId = "";
             if (url.includes('id=')) { fileId = url.split('id=')[1].split('&')[0]; } 
             else if (url.includes('/d/')) { fileId = url.split('/d/')[1].split('/')[0]; }
-            return fileId ? `https://lh3.googleusercontent.com/u/0/d/${fileId}=s1000` : url;
+            return fileId ? `http://googleusercontent.com/profile/picture/6{fileId}=s1000` : url;
         };
 
-        // --- FITUR NAVIGASI BACK (HP & PC) ---
-        window.onpopstate = function() {
+        // --- SISTEM NAVIGASI TOMBOL KEMBALI HP ---
+        
+        // Deteksi tombol back fisik HP/Browser
+        window.addEventListener('popstate', function(event) {
+            // Tutup semua lapisan saat tombol back ditekan
             document.getElementById('modal-detail').style.display = 'none';
             document.getElementById('zoom-overlay').style.display = 'none';
-        };
-
-        function zoom(src) {
-            document.getElementById('zoom-img').src = src;
-            document.getElementById('zoom-overlay').style.display = 'flex';
-            history.pushState({view: 'zoom'}, ''); // Tambah riwayat zoom
-        }
-
-        function tutupZoom() {
-            if (window.location.hash === "#view") history.back();
-            document.getElementById('zoom-overlay').style.display = 'none';
-        }
+        });
 
         function buka(id) {
             activeProd = db.find(i => i.id == id);
@@ -122,19 +114,39 @@
                     t.innerHTML += `<img src="${thumbImg}" class="thumb" onclick="document.getElementById('v-img').src='${thumbImg}'">`;
                 }
             });
+
             document.getElementById('modal-detail').style.display = 'block';
-            history.pushState({view: 'detail'}, '', '#view'); // Tambah riwayat modal
+            
+            // Masukkan riwayat palsu agar tombol back HP hanya menutup modal
+            history.pushState({view: 'detail'}, '', '#detail');
         }
 
         function tutup() {
-            if (window.location.hash === "#view") {
-                history.back(); // Ini akan memicu window.onpopstate untuk menutup modal
+            // Jika ada hash #detail di URL, gunakan history.back()
+            if (window.location.hash === "#detail") {
+                history.back();
             } else {
                 document.getElementById('modal-detail').style.display = 'none';
             }
         }
 
-        // --- FUNGSI DASAR LAINNYA ---
+        function zoom(src) {
+            document.getElementById('zoom-img').src = src;
+            document.getElementById('zoom-overlay').style.display = 'flex';
+            // Masukkan riwayat palsu lagi untuk zoom
+            history.pushState({view: 'zoom'}, '', '#zoom');
+        }
+
+        function tutupZoom() {
+            if (window.location.hash === "#zoom") {
+                history.back();
+            } else {
+                document.getElementById('zoom-overlay').style.display = 'none';
+            }
+        }
+
+        // --- FUNGSI CORE DATA ---
+
         async function muat() {
             try {
                 const r = await fetch(scriptURL);
@@ -166,7 +178,13 @@
             });
         }
 
-        function tambahKeKeranjang() { cart.push(activeProd.nama); document.getElementById('c-count').innerText = cart.length; tutup(); alert(activeProd.nama + " ditambahkan."); }
+        function tambahKeKeranjang() { 
+            cart.push(activeProd.nama); 
+            document.getElementById('c-count').innerText = cart.length; 
+            tutup(); 
+            alert(activeProd.nama + " ditambahkan."); 
+        }
+
         function orderWA() {
             if(!cart.length) return alert("Keranjang kosong!");
             let msg = "Halo Asheeqa Printing, saya mau pesan:%0A" + cart.map((n, i) => `${i+1}. ${n}`).join('%0A');
