@@ -71,15 +71,23 @@
         <h3 id="adm-title">Tambah Produk Baru</h3>
         <input type="hidden" id="edit-id">
         <input type="hidden" id="o1"><input type="hidden" id="o2"><input type="hidden" id="o3"><input type="hidden" id="o4"><input type="hidden" id="o5">
+        
         <input type="text" id="nama" placeholder="Nama Produk">
         <select id="kelompok"><option value="AD">Seri AD</option><option value="CG">Seri CG</option></select>
         <input type="text" id="jenis" placeholder="Jenis (Softcover/Hardcover)">
         <input type="number" id="hargaA" placeholder="Harga Asli">
         <input type="number" id="hargaP" placeholder="Harga Promo">
         <textarea id="desk" placeholder="Deskripsi..."></textarea>
-        <input type="file" id="f1" accept="image/*"><input type="file" id="f2" accept="image/*"><input type="file" id="f3" accept="image/*">
-        <button onclick="simpan()" id="btnSave" style="background:var(--dark); color:white;">SIMPAN</button>
-        <button onclick="hapus()" id="btnDel" style="background:red; color:white; display:none;">HAPUS</button>
+        
+        <p style="font-size:11px; color:var(--promo); margin:10px 0 0;">*Upload file (Kosongkan jika tidak ganti foto)</p>
+        <input type="file" id="f1" accept="image/*">
+        <input type="file" id="f2" accept="image/*">
+        <input type="file" id="f3" accept="image/*">
+        <input type="file" id="f4" accept="image/*">
+        <input type="file" id="f5" accept="image/*">
+        
+        <button onclick="simpan()" id="btnSave" style="background:var(--dark); color:white; font-weight:bold;">SIMPAN</button>
+        <button onclick="hapusProduk()" id="btnDel" style="background:red; color:white; display:none;">HAPUS</button>
         <button onclick="location.reload()" style="background:#eee;">BATAL</button>
     </div>
 
@@ -168,7 +176,7 @@
             });
         }
 
-        // Deteksi Geser
+        // Fitur Swipe (Geser)
         const slider = document.getElementById('slider-area');
         slider.ontouchstart = e => touchX = e.touches[0].clientX;
         slider.ontouchend = e => {
@@ -182,7 +190,8 @@
 
         function tutup() { if(window.location.hash === '#detail') history.back(); document.getElementById('modal-detail').style.display = 'none'; }
         window.onpopstate = () => document.getElementById('modal-detail').style.display = 'none';
-        function tambahKeKeranjang() { cart.push(activeProd.nama); document.getElementById('c-count').innerText = cart.length; alert("Ditambahkan!"); tutup(); }
+
+        function tambahKeKeranjang() { cart.push(activeProd.nama); document.getElementById('c-count').innerText = cart.length; alert("Ditambahkan ke pesanan!"); tutup(); }
         function orderWA() { window.open(`https://api.whatsapp.com/send?phone=6289699910769&text=Halo Asheeqa Printing, saya mau pesan:%0A${cart.join('%0A')}`); }
         
         function isiEdit(id) {
@@ -194,10 +203,73 @@
             document.getElementById('hargaA').value = i.hargaAsli;
             document.getElementById('hargaP').value = i.hargaPromo;
             document.getElementById('desk').value = i.deskripsi;
-            document.getElementById('o1').value = i.url;
+            
+            // Masukkan link foto lama agar tidak hilang jika tidak diupload baru
+            document.getElementById('o1').value = i.url || "";
+            document.getElementById('o2').value = i.url2 || "";
+            document.getElementById('o3').value = i.url3 || "";
+            document.getElementById('o4').value = i.url4 || "";
+            document.getElementById('o5').value = i.url5 || "";
+
             document.getElementById('btnDel').style.display = 'block';
             document.getElementById('btnSave').innerText = "UPDATE DATA";
-            window.scrollTo(0,0);
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        // FUNGSI SIMPAN & UPDATE (Sinkron dengan Kode.gs Anda)
+        async function simpan() {
+            const btn = document.getElementById('btnSave');
+            btn.disabled = true;
+            btn.innerText = "⏳ Sedang Mengunggah...";
+
+            const toB64 = f => !f ? "" : new Promise((res) => {
+                const r = new FileReader(); 
+                r.readAsDataURL(f);
+                r.onload = () => res(r.result);
+            });
+
+            const p = new URLSearchParams();
+            p.append('action', document.getElementById('edit-id').value ? 'update' : 'add');
+            p.append('rowId', document.getElementById('edit-id').value);
+            p.append('nama', document.getElementById('nama').value);
+            p.append('kelompok', document.getElementById('kelompok').value);
+            p.append('jenis', document.getElementById('jenis').value);
+            p.append('hargaAsli', document.getElementById('hargaA').value);
+            p.append('hargaPromo', document.getElementById('hargaP').value);
+            p.append('deskripsi', document.getElementById('desk').value);
+
+            // Link lama
+            p.append('old1', document.getElementById('o1').value);
+            p.append('old2', document.getElementById('o2').value);
+            p.append('old3', document.getElementById('o3').value);
+            p.append('old4', document.getElementById('o4').value);
+            p.append('old5', document.getElementById('o5').value);
+
+            // Foto baru (jika ada)
+            p.append('img1', await toB64(document.getElementById('f1').files[0]));
+            p.append('img2', await toB64(document.getElementById('f2').files[0]));
+            p.append('img3', await toB64(document.getElementById('f3').files[0]));
+            p.append('img4', await toB64(document.getElementById('f4').files[0]));
+            p.append('img5', await toB64(document.getElementById('f5').files[0]));
+
+            try {
+                await fetch(scriptURL, { method: 'POST', body: p });
+                alert("Berhasil disimpan ke Asheeqa Printing!");
+                location.reload();
+            } catch (err) {
+                alert("Gagal: " + err);
+                btn.disabled = false;
+                btn.innerText = "SIMPAN";
+            }
+        }
+
+        async function hapusProduk() {
+            if(!confirm("Hapus produk ini?")) return;
+            const p = new URLSearchParams();
+            p.append('action', 'delete');
+            p.append('rowId', document.getElementById('edit-id').value);
+            await fetch(scriptURL, { method: 'POST', body: p });
+            location.reload();
         }
 
         muat();
