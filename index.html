@@ -8,37 +8,37 @@
         :root { --wa: #25D366; --gold: #c5a059; --dark: #2d3436; --bg: #f9f9fb; --promo: #d63031; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; color: #333; }
         
-        /* Header */
         .header { background: white; padding: 25px 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .logo { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 10px; object-fit: contain; background: white; padding: 8px; box-sizing: border-box; }
         .brand-name { font-size: 28px; font-weight: 800; color: var(--dark); margin: 0; }
-        .contact-info { font-size: 13px; color: #777; margin-top: 5px; }
-
-        /* Admin Box */
+        
+        /* Form Admin */
         .admin-box { background: white; padding: 20px; border-radius: 12px; max-width: 500px; margin: 20px auto; display: none; border: 2px dashed var(--gold); }
         input, select, textarea, button { width: 100%; padding: 12px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        .btn-save { background: var(--dark); color: white; border: none; font-weight: bold; cursor: pointer; }
-
+        
         /* Katalog */
         .nav-tabs { display: flex; justify-content: center; background: white; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .tab { padding: 15px 20px; cursor: pointer; font-weight: bold; color: #aaa; border-bottom: 3px solid transparent; }
         .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
-
         .container { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 15px; max-width: 1000px; margin: 0 auto; }
         .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08); position: relative; }
         .card img { width: 100%; height: 180px; object-fit: cover; cursor: pointer; }
-        .info { padding: 12px; text-align: center; }
         .price-new { color: var(--promo); font-weight: 800; font-size: 16px; }
-        .price-old { text-decoration: line-through; color: #999; font-size: 12px; }
 
-        /* Modal Detail */
-        #modal-detail { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:1000; overflow-y: auto; }
-        .modal-content { background: white; width: 100%; max-width: 450px; margin: 0 auto; min-height: 100vh; position: relative; }
-        .main-view { width: 100%; height: 350px; object-fit: contain; background: #eee; }
-        .thumb-list { display: flex; gap: 8px; padding: 10px; overflow-x: auto; }
-        .thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; border: 1.5px solid #ddd; }
+        /* Modal & Zoom Feature */
+        #modal-detail { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:1000; overflow-y: auto; }
+        .modal-content { background: white; width: 100%; max-width: 450px; margin: 0 auto; min-height: 100vh; }
+        
+        /* Gambar Utama bisa di-zoom */
+        .img-container { width: 100%; height: 400px; overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center; position: relative; }
+        .main-view { width: 100%; height: 100%; object-fit: contain; transition: transform 0.3s ease; cursor: zoom-in; }
+        .main-view:active { transform: scale(2); cursor: zoom-out; } /* Simple tap zoom */
 
-        .cart-btn { position: fixed; bottom: 20px; right: 20px; background: var(--dark); color: white; padding: 15px 25px; border-radius: 50px; cursor: pointer; font-weight: bold; border: 2px solid var(--gold); z-index: 999; }
+        .thumb-list { display: flex; gap: 8px; padding: 10px; overflow-x: auto; background: #f0f0f0; }
+        .thumb { width: 65px; height: 65px; object-fit: cover; border-radius: 5px; cursor: pointer; border: 2px solid transparent; flex-shrink: 0; }
+        .thumb.active-thumb { border-color: var(--gold); }
+
+        .cart-btn { position: fixed; bottom: 20px; right: 20px; background: var(--dark); color: white; padding: 15px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; z-index: 999; border: 2px solid var(--gold); }
     </style>
 </head>
 <body>
@@ -46,7 +46,7 @@
     <div class="header">
         <img src="https://lh3.googleusercontent.com/d/1F055wulsiC-LDjW_NMZ4yXsMSCDj53TW" class="logo" alt="Logo" onerror="this.src='https://ui-avatars.com/api/?name=AP&background=c5a059&color=fff'">
         <h1 class="brand-name">Asheeqa Printing</h1>
-        <div class="contact-info">📞 089699910769 | 📍 Makassar</div>
+        <div style="font-size:12px; color:#777;">📍 Makassar | 📞 089699910769</div>
     </div>
 
     <div class="nav-tabs">
@@ -56,34 +56,40 @@
     </div>
 
     <div id="admin-box" class="admin-box">
-        <h3 id="adm-title">Tambah/Edit Produk</h3>
-        <input type="hidden" id="edit-id"><input type="hidden" id="o1"><input type="hidden" id="o2"><input type="hidden" id="o3"><input type="hidden" id="o4"><input type="hidden" id="o5">
-        <input type="text" id="nama" placeholder="Nama Produk">
+        <h3 id="adm-title">Tambah Produk Baru</h3>
+        <input type="hidden" id="edit-id">
+        <input type="hidden" id="o1"><input type="hidden" id="o2"><input type="hidden" id="o3"><input type="hidden" id="o4"><input type="hidden" id="o5">
+        
+        <input type="text" id="nama" placeholder="Nama Produk (Misal: Erba 88170)">
         <select id="kelompok"><option value="AD">Seri AD</option><option value="CG">Seri CG</option></select>
         <input type="text" id="jenis" placeholder="Jenis (Softcover/Hardcover)">
         <input type="number" id="hargaA" placeholder="Harga Asli">
         <input type="number" id="hargaP" placeholder="Harga Promo">
-        <p style="font-size:11px; color:#666; margin:10px 0 5px;">Upload Foto Baru (Maks 5):</p>
+        <textarea id="desk" placeholder="Deskripsi: Ukuran, Bahan, Kelengkapan..."></textarea>
+        
+        <p style="font-size:11px; color:var(--promo); margin:10px 0 5px;">*Upload file hanya jika ingin ganti foto</p>
         <input type="file" id="f1" accept="image/*"><input type="file" id="f2" accept="image/*">
         <input type="file" id="f3" accept="image/*"><input type="file" id="f4" accept="image/*"><input type="file" id="f5" accept="image/*">
-        <textarea id="desk" placeholder="Deskripsi Lengkap"></textarea>
-        <button onclick="simpan()" id="btnSave" class="btn-save">SIMPAN KE DATABASE</button>
-        <button onclick="hapus()" id="btnDel" style="background:red; color:white; display:none; border:none;">HAPUS</button>
-        <button onclick="location.reload()" style="background:#eee; color:#333; border:none;">BATAL</button>
+        
+        <button onclick="simpan()" id="btnSave" style="background:var(--dark); color:white; font-weight:bold;">SIMPAN KE DATABASE</button>
+        <button onclick="hapus()" id="btnDel" style="background:red; color:white; display:none;">HAPUS PRODUK</button>
+        <button onclick="location.reload()" style="background:#eee; color:#333;">BATAL / RESET</button>
     </div>
 
     <div class="container" id="container">Memuat data...</div>
 
     <div id="modal-detail">
         <div class="modal-content">
-            <button onclick="tutup()" style="width:100%; padding:15px; border:none; background:#333; color:white; font-weight:bold; cursor:pointer;">← KEMBALI</button>
-            <img id="v-img" class="main-view">
+            <button onclick="tutup()" style="width:100%; padding:15px; border:none; background:#333; color:white; font-weight:bold;">← KEMBALI</button>
+            <div class="img-container">
+                <img id="v-img" class="main-view" title="Klik untuk zoom">
+            </div>
             <div class="thumb-list" id="v-thumbs"></div>
             <div style="padding:20px;">
-                <h2 id="v-nama" style="margin:0"></h2>
+                <h2 id="v-nama" style="margin:0; color:var(--dark);"></h2>
                 <p id="v-jenis" style="color:var(--gold); font-weight:bold; margin:5px 0;"></p>
-                <div id="v-desk" style="color:#555; font-size:14px; line-height:1.6; background:#f9f9f9; padding:15px; border-radius:8px; white-space: pre-wrap;"></div>
-                <button onclick="tambahKeKeranjang()" style="background:var(--wa); color:white; padding:15px; border:none; border-radius:10px; width:100%; font-weight:bold; margin-top:20px; cursor:pointer;">TAMBAH KE PESANAN</button>
+                <div id="v-desk" style="color:#555; font-size:14px; line-height:1.6; white-space: pre-wrap; margin-top:10px;"></div>
+                <button onclick="tambahKeKeranjang()" style="background:var(--wa); color:white; padding:18px; border:none; border-radius:12px; width:100%; font-weight:bold; margin-top:20px; font-size:16px;">🛒 TAMBAH KE PESANAN</button>
             </div>
         </div>
     </div>
@@ -92,33 +98,23 @@
 
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyxcNyq4dUZEXMXROj6Jq0ijzLlQv1SQUrN5pR931IQXj-A_Tn123tCDXSpGrMfHWSOvg/exec'; 
-        const noWA = '6289699910769';
         let db = [], cart = [], activeProd = null;
 
         const isAdmin = new URLSearchParams(window.location.search).get('mode') === 'admin';
         if (isAdmin) document.getElementById('admin-box').style.display = 'block';
 
-        // --- SOLUSI GAMBAR BLUR ---
-        // Menambahkan parameter &sz=w1000 agar Google Drive memberikan resolusi tinggi (HD)
         const fixUrl = (url) => {
             if(!url || url.length < 20) return "";
-            let fileId = "";
-            if (url.includes('id=')) { fileId = url.split('id=')[1].split('&')[0]; } 
-            else if (url.includes('/d/')) { fileId = url.split('/d/')[1].split('/')[0]; }
-            return fileId ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000` : url;
+            let id = url.includes('id=') ? url.split('id=')[1].split('&')[0] : url.split('/d/')[1]?.split('/')[0];
+            return id ? `https://drive.google.com/thumbnail?id=${id}&sz=w1000` : url;
         };
-
-        // --- SOLUSI TOMBOL KEMBALI (Sistem History) ---
-        window.addEventListener('popstate', function() {
-            document.getElementById('modal-detail').style.display = 'none';
-        });
 
         async function muat() {
             try {
                 const r = await fetch(scriptURL);
                 db = await r.json();
                 filter('PROMO', document.querySelector('.tab'));
-            } catch (e) { document.getElementById('container').innerText = "Gagal memuat data."; }
+            } catch (e) { document.getElementById('container').innerText = "Gagal memuat."; }
         }
 
         function filter(kat, el) {
@@ -131,65 +127,105 @@
             items.forEach(i => {
                 cont.innerHTML += `
                     <div class="card">
-                        ${i.hargaPromo ? '<div class="badge">PROMO</div>' : ''}
                         <img src="${fixUrl(i.url)}" onclick="buka('${i.id}')">
                         <div class="info">
-                            <b>${i.nama}</b>
+                            <b style="font-size:13px;">${i.nama}</b>
                             <div class="price-new">Rp ${parseInt(i.hargaPromo || i.hargaAsli).toLocaleString('id-ID')}</div>
-                            ${isAdmin ? `<button onclick="isiEdit('${i.id}')" style="background:var(--gold); border:none; color:white; padding:5px; border-radius:5px; font-size:10px; margin-top:10px; cursor:pointer;">EDIT</button>` : ''}
+                            ${isAdmin ? `<button onclick="isiEdit('${i.id}')" style="background:var(--gold); border:none; color:white; padding:6px; border-radius:5px; font-size:10px; margin-top:8px; cursor:pointer;">EDIT DATA</button>` : ''}
                         </div>
                     </div>`;
             });
         }
 
+        // FUNGSI EDIT FIXED
+        function isiEdit(id) {
+            const i = db.find(x => x.id == id);
+            document.getElementById('adm-title').innerText = "Sedang Edit: " + i.nama;
+            document.getElementById('edit-id').value = i.id;
+            document.getElementById('nama').value = i.nama;
+            document.getElementById('kelompok').value = i.kelompok;
+            document.getElementById('jenis').value = i.jenis;
+            document.getElementById('hargaA').value = i.hargaAsli;
+            document.getElementById('hargaP').value = i.hargaPromo;
+            document.getElementById('desk').value = i.deskripsi;
+            // Simpan link lama ke hidden input
+            document.getElementById('o1').value = i.url; document.getElementById('o2').value = i.url2;
+            document.getElementById('o3').value = i.url3; document.getElementById('o4').value = i.url4;
+            document.getElementById('o5').value = i.url5;
+            
+            document.getElementById('btnDel').style.display = 'block';
+            document.getElementById('btnSave').innerText = "UPDATE DATA";
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
         function buka(id) {
             activeProd = db.find(i => i.id == id);
-            document.getElementById('v-img').src = fixUrl(activeProd.url);
+            const mainImg = document.getElementById('v-img');
+            mainImg.src = fixUrl(activeProd.url);
             document.getElementById('v-nama').innerText = activeProd.nama;
             document.getElementById('v-jenis').innerText = activeProd.jenis;
-            document.getElementById('v-desk').innerText = activeProd.deskripsi || "Hubungi admin untuk detail.";
+            document.getElementById('v-desk').innerText = activeProd.deskripsi || "Hubungi admin untuk detail bahan dan ukuran.";
             
             const t = document.getElementById('v-thumbs'); t.innerHTML = '';
-            [activeProd.url, activeProd.url2, activeProd.url3, activeProd.url4, activeProd.url5].forEach(u => {
+            [activeProd.url, activeProd.url2, activeProd.url3, activeProd.url4, activeProd.url5].forEach((u, idx) => {
                 if(u && u.length > 20) {
-                    t.innerHTML += `<img src="${fixUrl(u)}" class="thumb" onclick="document.getElementById('v-img').src='${fixUrl(u)}'">`;
+                    const imgThumb = document.createElement('img');
+                    imgThumb.src = fixUrl(u);
+                    imgThumb.className = 'thumb';
+                    if(idx === 0) imgThumb.classList.add('active-thumb');
+                    imgThumb.onclick = function() {
+                        mainImg.src = fixUrl(u);
+                        document.querySelectorAll('.thumb').forEach(tm => tm.classList.remove('active-thumb'));
+                        this.classList.add('active-thumb');
+                    };
+                    t.appendChild(imgThumb);
                 }
             });
-
             document.getElementById('modal-detail').style.display = 'block';
-            // Menambahkan history agar saat ditekan back di HP, modal tertutup
-            history.pushState({modal: true}, '', '#detail');
+            history.pushState({viewing:true}, '', '#detail');
         }
 
         function tutup() {
-            if (window.location.hash === "#detail") {
-                history.back();
-            } else {
-                document.getElementById('modal-detail').style.display = 'none';
-            }
+            if(window.location.hash === '#detail') history.back();
+            document.getElementById('modal-detail').style.display = 'none';
         }
 
-        // --- SISA FUNGSI ADMIN TETAP SAMA ---
+        window.onpopstate = () => document.getElementById('modal-detail').style.display = 'none';
+
+        function tambahKeKeranjang() {
+            cart.push(activeProd.nama);
+            document.getElementById('c-count').innerText = cart.length;
+            alert(activeProd.nama + " masuk ke daftar pesanan.");
+            tutup();
+        }
+
+        function orderWA() {
+            if(!cart.length) return alert("Pilih produk dulu!");
+            let teks = "Halo Asheeqa Printing, saya mau pesan:%0A" + cart.map((n, i) => `${i+1}. ${n}`).join('%0A');
+            window.open(`https://api.whatsapp.com/send?phone=6289699910769&text=${teks}`);
+        }
+
+        // FUNGSI SIMPAN & UPLOAD
         async function simpan() {
-            const b = document.getElementById('btnSave');
-            b.innerText = "⏳ Sedang Proses..."; b.disabled = true;
-            // ... (logika toB64 dan fetch tetap seperti milik Anda)
-            const n = document.getElementById('nama').value;
-            const toB64 = f => !f ? "" : new Promise((res, rej) => {
+            const btn = document.getElementById('btnSave');
+            btn.disabled = true; btn.innerText = "⏳ Sedang Proses...";
+            
+            const toB64 = f => !f ? "" : new Promise((res) => {
                 const r = new FileReader(); r.readAsDataURL(f);
-                r.onload = () => res(r.result); r.onerror = e => rej(e);
+                r.onload = () => res(r.result);
             });
 
             const p = new URLSearchParams({
                 action: document.getElementById('edit-id').value ? 'update' : 'add',
                 rowId: document.getElementById('edit-id').value,
-                nama: n,
+                nama: document.getElementById('nama').value,
                 kelompok: document.getElementById('kelompok').value,
                 jenis: document.getElementById('jenis').value,
                 hargaAsli: document.getElementById('hargaA').value,
                 hargaPromo: document.getElementById('hargaP').value,
                 deskripsi: document.getElementById('desk').value,
                 old1: document.getElementById('o1').value, old2: document.getElementById('o2').value,
+                old3: document.getElementById('o3').value, old4: document.getElementById('o4').value, old5: document.getElementById('o5').value,
                 img1: await toB64(document.getElementById('f1').files[0]),
                 img2: await toB64(document.getElementById('f2').files[0]),
                 img3: await toB64(document.getElementById('f3').files[0]),
@@ -197,15 +233,16 @@
                 img5: await toB64(document.getElementById('f5').files[0])
             });
 
-            try {
-                await fetch(scriptURL, { method: 'POST', body: p });
-                location.reload();
-            } catch(e) { alert("Gagal!"); b.innerText = "SIMPAN"; b.disabled = false; }
+            await fetch(scriptURL, { method: 'POST', body: p });
+            location.reload();
         }
 
-        function orderWA() {
-            if(!cart.length) return alert("Kosong!");
-            window.open(`https://api.whatsapp.com/send?phone=${noWA}&text=Halo Asheeqa Printing, saya mau pesan:%0A${cart.join('%0A')}`);
+        async function hapus() {
+            if(confirm("Hapus produk ini secara permanen?")) {
+                const p = new URLSearchParams({ action: 'delete', rowId: document.getElementById('edit-id').value });
+                await fetch(scriptURL, { method: 'POST', body: p });
+                location.reload();
+            }
         }
 
         muat();
