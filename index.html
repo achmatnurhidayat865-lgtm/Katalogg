@@ -8,45 +8,47 @@
         :root { --wa: #25D366; --gold: #c5a059; --dark: #2d3436; --bg: #f9f9fb; --promo: #d63031; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 80px; color: #333; }
         
-        /* Header & Logo */
+        /* Header */
         .header { background: white; padding: 25px 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .logo { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--gold); margin-bottom: 10px; object-fit: contain; background: white; padding: 8px; box-sizing: border-box; }
         .brand-name { font-size: 28px; font-weight: 800; color: var(--dark); margin: 0; }
         
-        /* Form Admin */
+        /* Admin */
         .admin-box { background: white; padding: 20px; border-radius: 12px; max-width: 500px; margin: 20px auto; display: none; border: 2px dashed var(--gold); }
         input, select, textarea, button { width: 100%; padding: 12px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
         
-        /* Tab Navigasi */
+        /* Tabs */
         .nav-tabs { display: flex; justify-content: center; background: white; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .tab { padding: 15px 20px; cursor: pointer; font-weight: bold; color: #aaa; border-bottom: 3px solid transparent; }
         .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
 
-        /* Grid Katalog */
+        /* Grid & Card */
         .container { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 15px; max-width: 1000px; margin: 0 auto; }
-        .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08); position: relative; }
-        .card img { width: 100%; height: 180px; object-fit: cover; cursor: pointer; display: block; }
+        .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08); position: relative; display: flex; flex-direction: column; }
+        .card img { width: 100%; height: 180px; object-fit: cover; cursor: pointer; border-bottom: 1px solid #eee; }
         
-        /* Badge Promo */
-        .badge { position: absolute; top: 10px; left: 10px; background: var(--promo); color: white; padding: 4px 8px; border-radius: 5px; font-size: 10px; font-weight: bold; z-index: 5; }
+        .badge { position: absolute; top: 10px; left: 10px; background: var(--promo); color: white; padding: 4px 8px; border-radius: 5px; font-size: 10px; font-weight: bold; z-index: 5; pointer-events: none; }
 
-        /* Info Harga */
         .info { padding: 12px; text-align: center; }
         .price-container { display: flex; flex-direction: column; align-items: center; min-height: 40px; justify-content: center; }
         .price-old { text-decoration: line-through; color: #999; font-size: 11px; }
         .price-new { color: var(--promo); font-weight: 800; font-size: 15px; }
 
-        /* Modal Detail & Zoom */
+        /* Modal & Slider */
         #modal-detail { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:1000; overflow-y: auto; }
         .modal-content { background: white; width: 100%; max-width: 450px; margin: 0 auto; min-height: 100vh; position: relative; }
         
-        .img-container { width: 100%; height: 380px; overflow: hidden; background: #f0f0f0; display: flex; align-items: center; justify-content: center; position: relative; }
+        .img-slider-box { width: 100%; height: 380px; overflow: hidden; background: #f0f0f0; display: flex; align-items: center; justify-content: center; position: relative; touch-action: pan-y; }
         .main-view { width: 100%; height: 100%; object-fit: contain; transition: transform 0.3s ease; cursor: zoom-in; }
         .main-view:active { transform: scale(2); cursor: zoom-out; } 
 
+        .slide-dots { display: flex; justify-content: center; gap: 5px; padding: 10px; background: #fff; }
+        .dot { width: 8px; height: 8px; background: #ccc; border-radius: 50%; transition: 0.3s; }
+        .dot.active { background: var(--gold); width: 20px; border-radius: 10px; }
+
         .thumb-list { display: flex; gap: 8px; padding: 10px; overflow-x: auto; background: #eee; }
-        .thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; cursor: pointer; border: 2px solid transparent; flex-shrink: 0; }
-        .thumb.active-thumb { border-color: var(--gold); }
+        .thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; cursor: pointer; flex-shrink: 0; border: 2px solid transparent; }
+        .active-thumb { border-color: var(--gold); }
 
         .cart-btn { position: fixed; bottom: 20px; right: 20px; background: var(--dark); color: white; padding: 15px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; z-index: 999; border: 2px solid var(--gold); }
     </style>
@@ -56,7 +58,7 @@
     <div class="header">
         <img src="https://lh3.googleusercontent.com/d/1F055wulsiC-LDjW_NMZ4yXsMSCDj53TW" class="logo" alt="Logo" onerror="this.src='https://ui-avatars.com/api/?name=AP&background=c5a059&color=fff'">
         <h1 class="brand-name">Asheeqa Printing</h1>
-        <div style="font-size:12px; color:#777;">📍 Jl. Borong Raya 2 | 📞 089699910769</div>
+        <div style="font-size:12px; color:#777;">📍 Makassar | 📞 089699910769</div>
     </div>
 
     <div class="nav-tabs">
@@ -69,20 +71,15 @@
         <h3 id="adm-title">Tambah Produk Baru</h3>
         <input type="hidden" id="edit-id">
         <input type="hidden" id="o1"><input type="hidden" id="o2"><input type="hidden" id="o3"><input type="hidden" id="o4"><input type="hidden" id="o5">
-        
         <input type="text" id="nama" placeholder="Nama Produk">
         <select id="kelompok"><option value="AD">Seri AD</option><option value="CG">Seri CG</option></select>
         <input type="text" id="jenis" placeholder="Jenis (Softcover/Hardcover)">
         <input type="number" id="hargaA" placeholder="Harga Asli">
         <input type="number" id="hargaP" placeholder="Harga Promo">
-        <textarea id="desk" placeholder="Deskripsi: Ukuran, Bahan, Kelengkapan..."></textarea>
-        
-        <p style="font-size:11px; color:var(--promo); margin:10px 0 5px;">*Kosongkan file jika tidak ingin ganti foto</p>
-        <input type="file" id="f1" accept="image/*"><input type="file" id="f2" accept="image/*">
-        <input type="file" id="f3" accept="image/*"><input type="file" id="f4" accept="image/*"><input type="file" id="f5" accept="image/*">
-        
-        <button onclick="simpan()" id="btnSave" style="background:var(--dark); color:white; font-weight:bold;">SIMPAN DATA</button>
-        <button onclick="hapus()" id="btnDel" style="background:red; color:white; display:none;">HAPUS PRODUK</button>
+        <textarea id="desk" placeholder="Deskripsi..."></textarea>
+        <input type="file" id="f1" accept="image/*"><input type="file" id="f2" accept="image/*"><input type="file" id="f3" accept="image/*">
+        <button onclick="simpan()" id="btnSave" style="background:var(--dark); color:white;">SIMPAN</button>
+        <button onclick="hapus()" id="btnDel" style="background:red; color:white; display:none;">HAPUS</button>
         <button onclick="location.reload()" style="background:#eee;">BATAL</button>
     </div>
 
@@ -91,15 +88,16 @@
     <div id="modal-detail">
         <div class="modal-content">
             <button onclick="tutup()" style="width:100%; padding:15px; border:none; background:#333; color:white; font-weight:bold;">← KEMBALI</button>
-            <div class="img-container">
-                <img id="v-img" class="main-view" title="Klik & tahan untuk zoom">
+            <div class="img-slider-box" id="slider-area">
+                <img id="v-img" class="main-view">
             </div>
+            <div class="slide-dots" id="v-dots"></div>
             <div class="thumb-list" id="v-thumbs"></div>
             <div style="padding:20px;">
-                <h2 id="v-nama" style="margin:0; color:var(--dark);"></h2>
+                <h2 id="v-nama" style="margin:0"></h2>
                 <p id="v-jenis" style="color:var(--gold); font-weight:bold; margin:5px 0;"></p>
-                <div id="v-desk" style="color:#555; font-size:14px; line-height:1.6; white-space: pre-wrap; margin-top:10px;"></div>
-                <button onclick="tambahKeKeranjang()" style="background:var(--wa); color:white; padding:18px; border:none; border-radius:12px; width:100%; font-weight:bold; margin-top:20px; font-size:16px;">🛒 TAMBAH KE PESANAN</button>
+                <div id="v-desk" style="color:#555; font-size:14px; line-height:1.6; white-space: pre-wrap;"></div>
+                <button onclick="tambahKeKeranjang()" style="background:var(--wa); color:white; padding:18px; border:none; border-radius:12px; width:100%; font-weight:bold; margin-top:20px;">🛒 TAMBAH KE PESANAN</button>
             </div>
         </div>
     </div>
@@ -108,23 +106,18 @@
 
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyxcNyq4dUZEXMXROj6Jq0ijzLlQv1SQUrN5pR931IQXj-A_Tn123tCDXSpGrMfHWSOvg/exec'; 
-        let db = [], cart = [], activeProd = null;
+        let db = [], cart = [], activeProd = null, photos = [], currentIdx = 0;
+        let touchX = 0;
 
         const isAdmin = new URLSearchParams(window.location.search).get('mode') === 'admin';
         if (isAdmin) document.getElementById('admin-box').style.display = 'block';
 
-        const fixUrl = (url) => {
-            if(!url || url.length < 20) return "";
-            let id = url.includes('id=') ? url.split('id=')[1].split('&')[0] : url.split('/d/')[1]?.split('/')[0];
-            return id ? `https://drive.google.com/thumbnail?id=${id}&sz=w1000` : url;
-        };
+        const fixUrl = (u) => (u && u.length > 20) ? `https://drive.google.com/thumbnail?id=${u.includes('id=') ? u.split('id=')[1].split('&')[0] : u.split('/d/')[1]?.split('/')[0]}&sz=w1000` : "";
 
         async function muat() {
-            try {
-                const r = await fetch(scriptURL);
-                db = await r.json();
-                filter('PROMO', document.querySelector('.tab'));
-            } catch (e) { document.getElementById('container').innerText = "Gagal memuat."; }
+            const r = await fetch(scriptURL);
+            db = await r.json();
+            filter('PROMO', document.querySelector('.tab'));
         }
 
         function filter(kat, el) {
@@ -135,29 +128,16 @@
             let items = kat === 'PROMO' ? db.filter(i => i.hargaPromo > 0) : db.filter(i => i.kelompok === kat);
             
             items.forEach(i => {
-                // Logika Tampilan Harga
-                let htmlHarga = "";
-                if(i.hargaPromo > 0) {
-                    htmlHarga = `
-                        <div class="price-container">
-                            <span class="price-old">Rp ${parseInt(i.hargaAsli).toLocaleString('id-ID')}</span>
-                            <span class="price-new">Rp ${parseInt(i.hargaPromo).toLocaleString('id-ID')}</span>
-                        </div>`;
-                } else {
-                    htmlHarga = `
-                        <div class="price-container">
-                            <span class="price-new">Rp ${parseInt(i.hargaAsli).toLocaleString('id-ID')}</span>
-                        </div>`;
-                }
-
+                let harga = i.hargaPromo > 0 ? `<div class="price-container"><span class="price-old">Rp ${parseInt(i.hargaAsli).toLocaleString('id-ID')}</span><span class="price-new">Rp ${parseInt(i.hargaPromo).toLocaleString('id-ID')}</span></div>` : `<div class="price-container"><span class="price-new">Rp ${parseInt(i.hargaAsli).toLocaleString('id-ID')}</span></div>`;
+                
                 cont.innerHTML += `
                     <div class="card">
                         ${i.hargaPromo > 0 ? '<div class="badge">PROMO</div>' : ''}
                         <img src="${fixUrl(i.url)}" onclick="buka('${i.id}')">
                         <div class="info">
-                            <b style="font-size:13px; display:block; margin-bottom:5px;">${i.nama}</b>
-                            ${htmlHarga}
-                            ${isAdmin ? `<button onclick="isiEdit('${i.id}')" style="background:var(--gold); border:none; color:white; padding:6px; border-radius:5px; font-size:10px; margin-top:8px; cursor:pointer; width:100%;">EDIT DATA</button>` : ''}
+                            <b style="font-size:13px;">${i.nama}</b>
+                            ${harga}
+                            ${isAdmin ? `<button onclick="isiEdit('${i.id}')" style="background:var(--gold); color:white; border:none; padding:6px; margin-top:5px; border-radius:5px; width:100%;">EDIT</button>` : ''}
                         </div>
                     </div>`;
             });
@@ -165,40 +145,48 @@
 
         function buka(id) {
             activeProd = db.find(i => i.id == id);
-            const mainImg = document.getElementById('v-img');
-            mainImg.src = fixUrl(activeProd.url);
+            photos = [activeProd.url, activeProd.url2, activeProd.url3, activeProd.url4, activeProd.url5].filter(u => u && u.length > 20);
+            currentIdx = 0;
+            updateSlider();
             document.getElementById('v-nama').innerText = activeProd.nama;
             document.getElementById('v-jenis').innerText = activeProd.jenis;
-            document.getElementById('v-desk').innerText = activeProd.deskripsi || "Hubungi admin untuk detail bahan dan ukuran.";
-            
-            const t = document.getElementById('v-thumbs'); t.innerHTML = '';
-            [activeProd.url, activeProd.url2, activeProd.url3, activeProd.url4, activeProd.url5].forEach((u, idx) => {
-                if(u && u.length > 20) {
-                    const imgThumb = document.createElement('img');
-                    imgThumb.src = fixUrl(u);
-                    imgThumb.className = 'thumb' + (idx === 0 ? ' active-thumb' : '');
-                    imgThumb.onclick = function() {
-                        mainImg.src = fixUrl(u);
-                        document.querySelectorAll('.thumb').forEach(tm => tm.classList.remove('active-thumb'));
-                        this.classList.add('active-thumb');
-                    };
-                    t.appendChild(imgThumb);
-                }
-            });
+            document.getElementById('v-desk').innerText = activeProd.deskripsi || "Detail produk Asheeqa Printing.";
             document.getElementById('modal-detail').style.display = 'block';
-            history.pushState({viewing:true}, '', '#detail');
+            history.pushState({modal:true}, '', '#detail');
         }
 
-        function tutup() {
-            if(window.location.hash === '#detail') history.back();
-            document.getElementById('modal-detail').style.display = 'none';
+        function updateSlider() {
+            const img = document.getElementById('v-img');
+            img.src = fixUrl(photos[currentIdx]);
+            document.getElementById('v-dots').innerHTML = photos.map((_, i) => `<div class="dot ${i === currentIdx ? 'active' : ''}"></div>`).join('');
+            const thumbs = document.getElementById('v-thumbs');
+            thumbs.innerHTML = '';
+            photos.forEach((u, i) => {
+                let t = document.createElement('img'); t.src = fixUrl(u); t.className = 'thumb' + (i === currentIdx ? ' active-thumb' : '');
+                t.onclick = () => { currentIdx = i; updateSlider(); };
+                thumbs.appendChild(t);
+            });
         }
 
+        // Deteksi Geser
+        const slider = document.getElementById('slider-area');
+        slider.ontouchstart = e => touchX = e.touches[0].clientX;
+        slider.ontouchend = e => {
+            let diff = touchX - e.changedTouches[0].clientX;
+            if(Math.abs(diff) > 50) {
+                if(diff > 0 && currentIdx < photos.length-1) currentIdx++;
+                else if(diff < 0 && currentIdx > 0) currentIdx--;
+                updateSlider();
+            }
+        };
+
+        function tutup() { if(window.location.hash === '#detail') history.back(); document.getElementById('modal-detail').style.display = 'none'; }
         window.onpopstate = () => document.getElementById('modal-detail').style.display = 'none';
-
+        function tambahKeKeranjang() { cart.push(activeProd.nama); document.getElementById('c-count').innerText = cart.length; alert("Ditambahkan!"); tutup(); }
+        function orderWA() { window.open(`https://api.whatsapp.com/send?phone=6289699910769&text=Halo Asheeqa Printing, saya mau pesan:%0A${cart.join('%0A')}`); }
+        
         function isiEdit(id) {
             const i = db.find(x => x.id == id);
-            document.getElementById('adm-title').innerText = "Sedang Edit: " + i.nama;
             document.getElementById('edit-id').value = i.id;
             document.getElementById('nama').value = i.nama;
             document.getElementById('kelompok').value = i.kelompok;
@@ -206,65 +194,10 @@
             document.getElementById('hargaA').value = i.hargaAsli;
             document.getElementById('hargaP').value = i.hargaPromo;
             document.getElementById('desk').value = i.deskripsi;
-            // Backup URL lama
-            document.getElementById('o1').value = i.url; document.getElementById('o2').value = i.url2;
-            document.getElementById('o3').value = i.url3; document.getElementById('o4').value = i.url4; document.getElementById('o5').value = i.url5;
-            
+            document.getElementById('o1').value = i.url;
             document.getElementById('btnDel').style.display = 'block';
             document.getElementById('btnSave').innerText = "UPDATE DATA";
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        }
-
-        async function simpan() {
-            const btn = document.getElementById('btnSave');
-            btn.disabled = true; btn.innerText = "⏳ Sedang Proses...";
-            
-            const toB64 = f => !f ? "" : new Promise((res) => {
-                const r = new FileReader(); r.readAsDataURL(f);
-                r.onload = () => res(r.result);
-            });
-
-            const p = new URLSearchParams({
-                action: document.getElementById('edit-id').value ? 'update' : 'add',
-                rowId: document.getElementById('edit-id').value,
-                nama: document.getElementById('nama').value,
-                kelompok: document.getElementById('kelompok').value,
-                jenis: document.getElementById('jenis').value,
-                hargaAsli: document.getElementById('hargaA').value,
-                hargaPromo: document.getElementById('hargaP').value,
-                deskripsi: document.getElementById('desk').value,
-                old1: document.getElementById('o1').value, old2: document.getElementById('o2').value,
-                old3: document.getElementById('o3').value, old4: document.getElementById('o4').value, old5: document.getElementById('o5').value,
-                img1: await toB64(document.getElementById('f1').files[0]),
-                img2: await toB64(document.getElementById('f2').files[0]),
-                img3: await toB64(document.getElementById('f3').files[0]),
-                img4: await toB64(document.getElementById('f4').files[0]),
-                img5: await toB64(document.getElementById('f5').files[0])
-            });
-
-            await fetch(scriptURL, { method: 'POST', body: p });
-            location.reload();
-        }
-
-        async function hapus() {
-            if(confirm("Hapus produk ini?")) {
-                const p = new URLSearchParams({ action: 'delete', rowId: document.getElementById('edit-id').value });
-                await fetch(scriptURL, { method: 'POST', body: p });
-                location.reload();
-            }
-        }
-
-        function tambahKeKeranjang() {
-            cart.push(activeProd.nama);
-            document.getElementById('c-count').innerText = cart.length;
-            alert(activeProd.nama + " masuk ke daftar pesanan.");
-            tutup();
-        }
-
-        function orderWA() {
-            if(!cart.length) return alert("Pilih produk dulu!");
-            let teks = "Halo Asheeqa Printing, saya mau pesan:%0A" + cart.map((n, i) => `${i+1}. ${n}`).join('%0A');
-            window.open(`https://api.whatsapp.com/send?phone=6289699910769&text=${teks}`);
+            window.scrollTo(0,0);
         }
 
         muat();
