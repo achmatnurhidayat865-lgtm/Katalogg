@@ -26,7 +26,6 @@
         .container { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 15px; max-width: 1000px; margin: 0 auto; }
         .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.08); position: relative; display: flex; flex-direction: column; }
         .card img { width: 100%; height: 180px; object-fit: cover; cursor: pointer; border-bottom: 1px solid #eee; }
-        
         .badge { position: absolute; top: 10px; left: 10px; background: var(--promo); color: white; padding: 4px 8px; border-radius: 5px; font-size: 10px; font-weight: bold; z-index: 5; pointer-events: none; }
 
         .info { padding: 12px; text-align: center; }
@@ -34,13 +33,12 @@
         .price-old { text-decoration: line-through; color: #999; font-size: 11px; }
         .price-new { color: var(--promo); font-weight: 800; font-size: 15px; }
 
-        /* Modal & Slider */
+        /* Modal Detail */
         #modal-detail { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:1000; overflow-y: auto; }
         .modal-content { background: white; width: 100%; max-width: 450px; margin: 0 auto; min-height: 100vh; position: relative; }
         
         .img-slider-box { width: 100%; height: 380px; overflow: hidden; background: #f0f0f0; display: flex; align-items: center; justify-content: center; position: relative; touch-action: pan-y; }
         .main-view { width: 100%; height: 100%; object-fit: contain; transition: transform 0.3s ease; cursor: zoom-in; }
-        .main-view:active { transform: scale(2); cursor: zoom-out; } 
 
         .slide-dots { display: flex; justify-content: center; gap: 5px; padding: 10px; background: #fff; }
         .dot { width: 8px; height: 8px; background: #ccc; border-radius: 50%; transition: 0.3s; }
@@ -50,13 +48,18 @@
         .thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; cursor: pointer; flex-shrink: 0; border: 2px solid transparent; }
         .active-thumb { border-color: var(--gold); }
 
+        /* Fullscreen View */
+        #fullscreen-view { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 2000; justify-content: center; align-items: center; overflow: hidden; touch-action: none; }
+        #full-img { max-width: 100%; max-height: 100%; transition: transform 0.3s ease, opacity 0.2s ease; user-select: none; }
+        .close-full { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; font-weight: bold; cursor: pointer; z-index: 2001; background: rgba(0,0,0,0.5); width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+
         .cart-btn { position: fixed; bottom: 20px; right: 20px; background: var(--dark); color: white; padding: 15px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; z-index: 999; border: 2px solid var(--gold); }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <img src="https://lh3.googleusercontent.com/d/1F055wulsiC-LDjW_NMZ4yXsMSCDj53TW" class="logo" alt="Logo" onerror="this.src='https://ui-avatars.com/api/?name=AP&background=c5a059&color=fff'">
+        <img src="https://ui-avatars.com/api/?name=AP&background=c5a059&color=fff" class="logo" alt="Logo">
         <h1 class="brand-name">Asheeqa Printing</h1>
         <div style="font-size:12px; color:#777;">📍 Makassar | 📞 089699910769</div>
     </div>
@@ -71,21 +74,15 @@
         <h3 id="adm-title">Tambah Produk Baru</h3>
         <input type="hidden" id="edit-id">
         <input type="hidden" id="o1"><input type="hidden" id="o2"><input type="hidden" id="o3"><input type="hidden" id="o4"><input type="hidden" id="o5">
-        
         <input type="text" id="nama" placeholder="Nama Produk">
         <select id="kelompok"><option value="AD">Seri AD</option><option value="CG">Seri CG</option></select>
         <input type="text" id="jenis" placeholder="Jenis (Softcover/Hardcover)">
         <input type="number" id="hargaA" placeholder="Harga Asli">
         <input type="number" id="hargaP" placeholder="Harga Promo">
         <textarea id="desk" placeholder="Deskripsi..."></textarea>
-        
-        <p style="font-size:11px; color:var(--promo); margin:10px 0 0;">*Upload file (Kosongkan jika tidak ganti foto)</p>
-        <input type="file" id="f1" accept="image/*">
-        <input type="file" id="f2" accept="image/*">
-        <input type="file" id="f3" accept="image/*">
-        <input type="file" id="f4" accept="image/*">
-        <input type="file" id="f5" accept="image/*">
-        
+        <p style="font-size:11px; color:var(--promo); margin:10px 0 0;">*Upload file (Maks 5)</p>
+        <input type="file" id="f1" accept="image/*"><input type="file" id="f2" accept="image/*"><input type="file" id="f3" accept="image/*">
+        <input type="file" id="f4" accept="image/*"><input type="file" id="f5" accept="image/*">
         <button onclick="simpan()" id="btnSave" style="background:var(--dark); color:white; font-weight:bold;">SIMPAN</button>
         <button onclick="hapusProduk()" id="btnDel" style="background:red; color:white; display:none;">HAPUS</button>
         <button onclick="location.reload()" style="background:#eee;">BATAL</button>
@@ -110,12 +107,17 @@
         </div>
     </div>
 
+    <div id="fullscreen-view" ontouchstart="startFullTouch(event)" ontouchend="endFullTouch(event)">
+        <span class="close-full" onclick="tutupFull()">×</span>
+        <img id="full-img" ontouchstart="startZoom(event)" ontouchmove="doZoom(event)">
+    </div>
+
     <div class="cart-btn" onclick="orderWA()">🛒 Pesanan (<span id="c-count">0</span>)</div>
 
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbyxcNyq4dUZEXMXROj6Jq0ijzLlQv1SQUrN5pR931IQXj-A_Tn123tCDXSpGrMfHWSOvg/exec'; 
         let db = [], cart = [], activeProd = null, photos = [], currentIdx = 0;
-        let touchX = 0;
+        let touchX = 0, fullTouchX = 0, initialDist = -1;
 
         const isAdmin = new URLSearchParams(window.location.search).get('mode') === 'admin';
         if (isAdmin) document.getElementById('admin-box').style.display = 'block';
@@ -134,20 +136,9 @@
             const cont = document.getElementById('container');
             cont.innerHTML = '';
             let items = kat === 'PROMO' ? db.filter(i => i.hargaPromo > 0) : db.filter(i => i.kelompok === kat);
-            
             items.forEach(i => {
                 let harga = i.hargaPromo > 0 ? `<div class="price-container"><span class="price-old">Rp ${parseInt(i.hargaAsli).toLocaleString('id-ID')}</span><span class="price-new">Rp ${parseInt(i.hargaPromo).toLocaleString('id-ID')}</span></div>` : `<div class="price-container"><span class="price-new">Rp ${parseInt(i.hargaAsli).toLocaleString('id-ID')}</span></div>`;
-                
-                cont.innerHTML += `
-                    <div class="card">
-                        ${i.hargaPromo > 0 ? '<div class="badge">PROMO</div>' : ''}
-                        <img src="${fixUrl(i.url)}" onclick="buka('${i.id}')">
-                        <div class="info">
-                            <b style="font-size:13px;">${i.nama}</b>
-                            ${harga}
-                            ${isAdmin ? `<button onclick="isiEdit('${i.id}')" style="background:var(--gold); color:white; border:none; padding:6px; margin-top:5px; border-radius:5px; width:100%;">EDIT</button>` : ''}
-                        </div>
-                    </div>`;
+                cont.innerHTML += `<div class="card"><img src="${fixUrl(i.url)}" onclick="buka('${i.id}')"><div class="info"><b style="font-size:13px;">${i.nama}</b>${harga}${isAdmin ? `<button onclick="isiEdit('${i.id}')" style="background:var(--gold); color:white; border:none; padding:6px; margin-top:5px; border-radius:5px; width:100%;">EDIT</button>` : ''}</div></div>`;
             });
         }
 
@@ -165,7 +156,10 @@
 
         function updateSlider() {
             const img = document.getElementById('v-img');
-            img.src = fixUrl(photos[currentIdx]);
+            const currentUrl = fixUrl(photos[currentIdx]);
+            img.src = currentUrl;
+            img.onclick = () => bukaFull(currentUrl); // Klik untuk Fullscreen
+
             document.getElementById('v-dots').innerHTML = photos.map((_, i) => `<div class="dot ${i === currentIdx ? 'active' : ''}"></div>`).join('');
             const thumbs = document.getElementById('v-thumbs');
             thumbs.innerHTML = '';
@@ -176,7 +170,7 @@
             });
         }
 
-        // Fitur Swipe (Geser)
+        // Swipe di Modal Detail
         const slider = document.getElementById('slider-area');
         slider.ontouchstart = e => touchX = e.touches[0].clientX;
         slider.ontouchend = e => {
@@ -188,12 +182,51 @@
             }
         };
 
-        function tutup() { if(window.location.hash === '#detail') history.back(); document.getElementById('modal-detail').style.display = 'none'; }
-        window.onpopstate = () => document.getElementById('modal-detail').style.display = 'none';
+        // FULLSCREEN LOGIC
+        function bukaFull(url) {
+            updateFullImage();
+            document.getElementById('fullscreen-view').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
 
-        function tambahKeKeranjang() { cart.push(activeProd.nama); document.getElementById('c-count').innerText = cart.length; alert("Ditambahkan ke pesanan!"); tutup(); }
+        function updateFullImage() {
+            const fullImg = document.getElementById('full-img');
+            fullImg.style.opacity = '0';
+            setTimeout(() => {
+                fullImg.src = fixUrl(photos[currentIdx]);
+                fullImg.style.transform = "scale(1)";
+                fullImg.style.opacity = '1';
+            }, 150);
+        }
+
+        function startFullTouch(e) { if(e.touches.length === 1) fullTouchX = e.touches[0].clientX; }
+        function endFullTouch(e) {
+            if(e.changedTouches.length === 1) {
+                let diff = fullTouchX - e.changedTouches[0].clientX;
+                if(Math.abs(diff) > 70) {
+                    if(diff > 0 && currentIdx < photos.length-1) currentIdx++;
+                    else if(diff < 0 && currentIdx > 0) currentIdx--;
+                    updateSlider(); updateFullImage();
+                }
+            }
+        }
+
+        function startZoom(e) { if(e.touches.length === 2) initialDist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY); }
+        function doZoom(e) {
+            if(e.touches.length === 2 && initialDist > 0) {
+                let dist = Math.hypot(e.touches[0].pageX - e.touches[1].pageX, e.touches[0].pageY - e.touches[1].pageY);
+                let scale = Math.min(Math.max(dist / initialDist, 1), 3);
+                document.getElementById('full-img').style.transform = `scale(${scale})`;
+            }
+        }
+
+        function tutupFull() { document.getElementById('fullscreen-view').style.display = 'none'; document.body.style.overflow = 'auto'; }
+        function tutup() { if(window.location.hash === '#detail') history.back(); document.getElementById('modal-detail').style.display = 'none'; }
+        window.onpopstate = () => { tutup(); tutupFull(); };
+
+        function tambahKeKeranjang() { cart.push(activeProd.nama); document.getElementById('c-count').innerText = cart.length; alert("Ditambahkan!"); tutup(); }
         function orderWA() { window.open(`https://api.whatsapp.com/send?phone=6289699910769&text=Halo Asheeqa Printing, saya mau pesan:%0A${cart.join('%0A')}`); }
-        
+
         function isiEdit(id) {
             const i = db.find(x => x.id == id);
             document.getElementById('edit-id').value = i.id;
@@ -203,31 +236,20 @@
             document.getElementById('hargaA').value = i.hargaAsli;
             document.getElementById('hargaP').value = i.hargaPromo;
             document.getElementById('desk').value = i.deskripsi;
-            
-            // Masukkan link foto lama agar tidak hilang jika tidak diupload baru
-            document.getElementById('o1').value = i.url || "";
-            document.getElementById('o2').value = i.url2 || "";
-            document.getElementById('o3').value = i.url3 || "";
-            document.getElementById('o4').value = i.url4 || "";
+            document.getElementById('o1').value = i.url || ""; document.getElementById('o2').value = i.url2 || "";
+            document.getElementById('o3').value = i.url3 || ""; document.getElementById('o4').value = i.url4 || "";
             document.getElementById('o5').value = i.url5 || "";
-
             document.getElementById('btnDel').style.display = 'block';
             document.getElementById('btnSave').innerText = "UPDATE DATA";
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
-        // FUNGSI SIMPAN & UPDATE (Sinkron dengan Kode.gs Anda)
         async function simpan() {
             const btn = document.getElementById('btnSave');
-            btn.disabled = true;
-            btn.innerText = "⏳ Sedang Mengunggah...";
-
+            btn.disabled = true; btn.innerText = "⏳ Mengunggah...";
             const toB64 = f => !f ? "" : new Promise((res) => {
-                const r = new FileReader(); 
-                r.readAsDataURL(f);
-                r.onload = () => res(r.result);
+                const r = new FileReader(); r.readAsDataURL(f); r.onload = () => res(r.result);
             });
-
             const p = new URLSearchParams();
             p.append('action', document.getElementById('edit-id').value ? 'update' : 'add');
             p.append('rowId', document.getElementById('edit-id').value);
@@ -237,41 +259,21 @@
             p.append('hargaAsli', document.getElementById('hargaA').value);
             p.append('hargaPromo', document.getElementById('hargaP').value);
             p.append('deskripsi', document.getElementById('desk').value);
-
-            // Link lama
-            p.append('old1', document.getElementById('o1').value);
-            p.append('old2', document.getElementById('o2').value);
-            p.append('old3', document.getElementById('o3').value);
-            p.append('old4', document.getElementById('o4').value);
-            p.append('old5', document.getElementById('o5').value);
-
-            // Foto baru (jika ada)
-            p.append('img1', await toB64(document.getElementById('f1').files[0]));
-            p.append('img2', await toB64(document.getElementById('f2').files[0]));
-            p.append('img3', await toB64(document.getElementById('f3').files[0]));
-            p.append('img4', await toB64(document.getElementById('f4').files[0]));
-            p.append('img5', await toB64(document.getElementById('f5').files[0]));
-
-            try {
-                await fetch(scriptURL, { method: 'POST', body: p });
-                alert("Berhasil disimpan ke Asheeqa Printing!");
-                location.reload();
-            } catch (err) {
-                alert("Gagal: " + err);
-                btn.disabled = false;
-                btn.innerText = "SIMPAN";
+            for(let k=1; k<=5; k++) {
+                p.append('old'+k, document.getElementById('o'+k).value);
+                p.append('img'+k, await toB64(document.getElementById('f'+k).files[0]));
             }
-        }
-
-        async function hapusProduk() {
-            if(!confirm("Hapus produk ini?")) return;
-            const p = new URLSearchParams();
-            p.append('action', 'delete');
-            p.append('rowId', document.getElementById('edit-id').value);
             await fetch(scriptURL, { method: 'POST', body: p });
             location.reload();
         }
 
+        async function hapusProduk() {
+            if(!confirm("Hapus produk?")) return;
+            const p = new URLSearchParams();
+            p.append('action', 'delete'); p.append('rowId', document.getElementById('edit-id').value);
+            await fetch(scriptURL, { method: 'POST', body: p });
+            location.reload();
+        }
         muat();
     </script>
 </body>
