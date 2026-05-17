@@ -103,21 +103,26 @@
         const isAdmin = new URLSearchParams(window.location.search).get('mode') === 'admin';
         if (isAdmin) document.getElementById('admin-box').style.display = 'block';
 
-        // Fungsi agar foto tajam (HD)
+        // FUNGSI FIX LINK GAMBAR (TAJAM/HD)
         const fixUrl = (url) => {
             if(!url || url.length < 20) return "";
-            if(url.includes('drive.google.com')){
-                const id = url.split('id=')[1] || url.split('/d/')[1].split('/')[0];
+            let id = "";
+            if (url.includes('id=')) {
+                id = url.split('id=')[1].split('&')[0];
+            } else if (url.includes('/d/')) {
+                id = url.split('/d/')[1].split('/')[0];
+            }
+            if (id) {
                 return `https://drive.google.com/uc?export=view&id=${id}`;
             }
             return url;
         };
 
-        // Fungsi klik gambar untuk tampilan penuh
+        // FUNGSI KLIK GAMBAR FULLSCREEN
         function perbesar(url) {
             const overlay = document.createElement('div');
-            overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:2000; display:flex; align-items:center; justify-content:center; cursor:zoom-out;";
-            overlay.innerHTML = `<img src="${url}" style="max-width:95%; max-height:95%; border-radius:10px; box-shadow:0 0 20px rgba(0,0,0,0.5);">`;
+            overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:2000; display:flex; align-items:center; justify-content:center; cursor:zoom-out;";
+            overlay.innerHTML = `<img src="${url}" style="max-width:95%; max-height:95%; border-radius:5px; box-shadow:0 0 30px rgba(0,0,0,0.5);">`;
             overlay.onclick = () => overlay.remove();
             document.body.appendChild(overlay);
         }
@@ -128,7 +133,7 @@
                 db = await r.json();
                 filter('PROMO', document.querySelector('.tab'));
             } catch (e) { 
-                document.getElementById('container').innerText = "Gagal memuat data. Cek koneksi."; 
+                document.getElementById('container').innerText = "Gagal memuat data. Cek Izin Apps Script."; 
             }
         }
 
@@ -148,7 +153,7 @@
                 cont.innerHTML += `
                     <div class="card">
                         ${i.hargaPromo ? '<div class="badge">PROMO</div>' : ''}
-                        <img src="${fixUrl(i.url)}" onclick="buka('${i.id}')" onerror="this.src='https://via.placeholder.com/180?text=Cek+Drive'">
+                        <img src="${fixUrl(i.url)}" onclick="buka('${i.id}')" onerror="this.src='https://via.placeholder.com/180?text=Cek+Izin+Drive'">
                         <div class="info">
                             <b style="font-size:13px; display:block; margin-bottom:5px;">${i.nama}</b>
                             ${hargaHtml}
